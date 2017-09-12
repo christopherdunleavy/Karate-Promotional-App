@@ -1,0 +1,98 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>{{ publisher.name }}
+			<figure class="creator">
+				<img src="{{creator.picture}}">
+				<figcaption>{{creator.name}}</figcaption>
+			</figure>
+			</h1>
+
+		</div>
+	</div>
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+	<div class="row padding-top">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+			<a href="{{url_for('editPublisher', publisher_id = publisher.id )}}">
+				<button class="btn btn-default" id="edit-publisher">
+					<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Edit Publisher
+				</button>
+			</a>
+			<a href="{{url_for('newGame', publisher_id = publisher.id )}}">
+				<button class="btn btn-default" id="new-game">
+					<span class="glyphicon glyphicon-glass" aria-hidden="true"></span>Add Game
+				</button>
+			</a>
+						<a href="{{url_for('deletePublisher', publisher_id = publisher.id )}}">
+				<button class="btn btn-default delete" id="delete-publisher">
+					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete Publisher
+				</button>
+			</a>
+		</div>
+		<div class="col-md-7"></div>
+	</div>
+
+	{% if games !=[] %}
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<h2>Games</h2>
+				<form action="#" method="post">
+					<select name="order">
+						<option value="name">Name</option>
+						<option value="min_players">Min players</option>
+						<option value="max_players">Max players</option>
+						<option value="min_length">Min length</option>
+						<option value="max_length">Max length</option>
+						<option value="min_price">Price (lowest)</option>
+						<option value="max_price">Price (highest)</option>
+					<select>
+					<input type="submit">
+				</form>
+					{% for g in games %}
+						<div class="game">
+							<h3>{{g.name}}</h3>
+							<p>Description: {{g.description}}</p>
+
+							<!-- If min and max players or length are equal, display one value -->
+							{% if g.min_players == g.max_players %}
+							<p>{{g.min_players}} players</p>
+							{% else %}
+							<p>{{g.min_players}} - {{g.max_players}} players</p>
+							{% endif %}
+
+							{% if g.min_length == g.max_length %}
+							<p>{{g.min_length}} minutes</p>
+							{% else %}
+							<p>{{g.min_length}} - {{g.max_length}} minutes</p>
+							{% endif %}
+
+							<p class="price">${{g.price}}</p>
+							<a href='{{url_for('editGame', publisher_id = publisher.id, game_id=g.id ) }}'>Edit</a> |
+							<a href='{{url_for('deleteGame', publisher_id = publisher.id, game_id=g.id ) }}'>Delete</a>
+						</div>
+					{% endfor %}
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	{% endif %}
+{% endblock %}

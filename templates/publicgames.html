@@ -1,0 +1,69 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>All Games</h1>
+		</div>
+	</div>
+
+<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+	{% if games !=[] %}
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<h2>Order by:</h2>
+				<form action="#" method="post">
+					<select name="order">
+						<option value="min_players">Min players</option>
+						<option value="max_players">Max players</option>
+						<option value="min_length">Min length</option>
+						<option value="max_length">Max length</option>
+						<option value="min_price">Price (lowest)</option>
+						<option value="max_price">Price (highest)</option>
+					<select>
+					<input type="submit">
+				</form>
+					{% for g in games %}
+						<div class="menu-item">
+							<h3>{{g.name}}</h3>
+							<p>Description: {{g.description}}</p>
+
+							{% if g.min_players == g.max_players %}
+							<p>{{g.min_players}} players</p>
+							{% else %}
+							<p>{{g.min_players}} - {{g.max_players}} players</p>
+							{% endif %}
+
+							{% if g.min_length == g.max_length %}
+							<p>{{g.min_length}} minutes</p>
+							{% else %}
+							<p>{{g.min_length}} - {{g.max_length}} minutes</p>
+							{% endif %}
+
+							<p class="menu-price">${{g.price}}</p>
+							published by <a href='{{url_for('showPublisher', publisher_id = g.publisher_id) }}'>{{g.publisher.name}}</a>
+							<br>
+						</div>
+					{% endfor %}
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	{% endif %}
+{% endblock %}
