@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Promotional, Application, Publisher, Game, User
+from database_setup import Base, Promotional, Application
 from flask import session as login_session
 import random
 import string
@@ -47,24 +47,54 @@ def addPromotional():
 
 @app.route('/<int:promotional_id>', methods=['GET', 'POST'])
 def showPromotional(promotional_id):
-        promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.lastName).all()
-        title = promotional.date + " - " + promotional.type
-        return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.lastName).all()
+    title = promotional.date + " - " + promotional.type
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
+
+@app.route('/<int:promotional_id>/<string:color>', methods=['GET', 'POST'])
+def showPromotionalColor(promotional_id, color):
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
+    title = promotional.date + " - " + promotional.type + ": " + color
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
 def addApplication(promotional_id):
     if request.method == 'POST':
+        color = rank_to_belt(request.form['rank'])
         newApplication = Application(
             firstName=request.form['firstName'], lastName=request.form['lastName'], birthDate=request.form['birthDate'], rank=request.form['rank'],
-                 promotional_id=promotional_id)
+                 color=color, promotional_id=promotional_id)
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         session.commit()
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
 
-
-
+def rank_to_belt(argument):
+    switcher = {
+        "10thkyu": "yellow",
+        "9thkyu": "blue",
+        "8thkyu": "blue",
+        "7thkyu": "green",
+        "6thkyu": "green",
+        "5thkyu": "purple",
+        "4thkyu": "purple",
+        "3rdkyu": "brown",
+        "2ndkyu": "brown",
+        "1stkyu": "brown",
+        "1stdan": "black",
+        "2nddan": "black",
+        "3rddan": "black",
+        "4thdan": "black",
+        "5thdan": "black",
+        "6thdan": "black",
+        "7thdan": "black",
+        "8thdan": "black",
+        "9thdan": "black",
+        "10thdan": "black"
+    }
+    return switcher.get(argument, "nothing")
 
 
 

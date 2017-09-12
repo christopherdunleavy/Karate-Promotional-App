@@ -2,12 +2,19 @@
 {% block content %}
 {% include "appheader.html" %}
 <!-- Trigger the modal with a button -->
+<a href="{{url_for('home')}}">Home</a>
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Application</button>
+<a href="{{url_for('showPromotional',promotional_id=promotional_id)}}">All</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='yellow')}}">Yellow</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='blue')}}">Blue</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='green')}}">Green</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='purple')}}">Purple</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='brown')}}">Brown</a>
+<a href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='black')}}">Black</a>
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
-
     <!-- Modal content-->
     <div class="modal-content">
       <form method="post" action="{{url_for('addApplication', promotional_id=promotional_id)}}">
@@ -30,7 +37,6 @@
 	        	<option value="3rdkyu">3rd Kyu</option>
 	        	<option value="2ndkyu">2nd Kyu</option>
 	        	<option value="1stkyu">1st Kyu</option>
-	        	<option value="1stdan">1st Dan</option>
 	        	<option value="1stdan">1st Dan</option>
 	        	<option value="2nddan">2nd Dan</option>
 	        	<option value="3rddan">3rd Dan</option>
