@@ -30,6 +30,8 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+errors = {"1":"Error: Duplicate"}
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
@@ -64,6 +66,10 @@ def showPromotionalColor(promotional_id, color):
     existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     title = promotional.date + " - " + promotional.type + ": " + color
 
+    error = None
+    if request.args.get('error') != None:
+    		error = errors[request.args.get('error')] 
+
     def makeSelect(selected, name):
         if selected != None:
             select = "<select name='%s'>" % name
@@ -85,11 +91,7 @@ def showPromotionalColor(promotional_id, color):
     
     pairings = []
     for pairing in existingPairings:
-        sideA = pairing.application_A#session.query(Application).filter_by(id=pairing.sideA_id).one()
-        # if pairing.sideB_id != None:
-        #     sideB = session.query(Application).filter_by(id=pairing.sideB_id).one()
-        # else:
-        #     sideB = None
+        sideA = pairing.application_A
         sideB = pairing.application_B
 
         if sideB == None and len(unmatchedApplications) > 0:
@@ -108,7 +110,7 @@ def showPromotionalColor(promotional_id, color):
             name += 1
             pairings.append(tup)
 
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, pairings=pairings)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, pairings=pairings, error=error)
 
 
 
@@ -258,21 +260,30 @@ def updatePairings(promotional_id, color):
         print request.form
         session.query(Pairing).delete()
 
+        existingApplications = []
+        error = "1"
         i = 0
         while i <= len(request.form)/2:
             sideA_id=request.form[str(i)+"sideA"]
 
+            if sideA_id in existingApplications:
+            	return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=error))
+
+            existingApplications.append(sideA_id)
+
             if (str(i)+"sideB") in request.form:
                 sideB_id=request.form[str(i)+"sideB"] 
+                if sideB_id in existingApplications:
+            		return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=error))
+            	existingApplications.append(sideB_id)
             else:
                 sideB_id = None
-            print sideB_id
             newPairing = Pairing(promotional_id=promotional_id, sideA_id=sideA_id, sideB_id=sideB_id, color=color)
             session.add(newPairing)
             i += 1
 
         session.commit()
-        return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color))
+        return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=None))
 
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])

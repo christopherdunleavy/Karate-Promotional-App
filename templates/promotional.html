@@ -60,27 +60,34 @@
 
   </div>
 </div>
-<table>
-  <tr>
-    <th>Last Name</th>
-    <th>First Name</th>
-    <th>Birth Date</th>
-    <th>Rank</th>
-  </tr>
-  {% for application in applications %}
-  <tr>
-  	<td>{{application.lastName}}</td>
-  	<td>{{application.firstName}}</td>
-  	<td>{{application.birthDate}}</td>
-  	<td>{{application.rank}}</td>
-  </tr>
-  {% endfor %}
+<table class="table table-hover">
+  <thead>
+	  <tr>
+	    <th>Last Name</th>
+	    <th>First Name</th>
+	    <th>Birth Date</th>
+	    <th>Rank</th>
+	  </tr>
+  </thead>
+  <tbody>
+	  {% for application in applications %}
+	  <tr>
+	  	<td>{{application.lastName}}</td>
+	  	<td>{{application.firstName}}</td>
+	  	<td>{{application.birthDate}}</td>
+	  	<td>{{application.rank}}</td>
+	  </tr>
+	  {% endfor %}
+  </tbody>
 </table>
 <br>
 <br>
 <br>
+{% if error %}
+<h1>{{error}}</h1>
+{% endif %}
 <form method="post" action="{{url_for('updatePairings', promotional_id=promotional_id, color=color)}}">
-	<table>
+	<table class="table table-hover">
 		<tr>
 			<th>Left</th>
 			<th>Right</th>
