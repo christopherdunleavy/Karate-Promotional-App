@@ -10,7 +10,7 @@ class Promotional(Base):
     __tablename__ = 'promotional'
 
     id = Column(Integer, primary_key=True)
-    date = Column(String(20), nullable=False)
+    date = Column(Date, nullable=False)
     type = Column(String(20), nullable=False)
     applications = relationship("Application", back_populates="promotional")
     @property

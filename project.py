@@ -1,3 +1,4 @@
+from datetime import date
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -55,7 +56,7 @@ def addPromotional():
 def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.lastName).all()
-    title = promotional.date + " - " + promotional.type
+    title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
 
 @app.route('/<int:promotional_id>/<string:color>', methods=['GET', 'POST'])
@@ -64,7 +65,7 @@ def showPromotionalColor(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
     unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
     existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
-    title = promotional.date + " - " + promotional.type + ": " + color
+    title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     error = None
     if request.args.get('error') != None:
