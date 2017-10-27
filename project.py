@@ -120,11 +120,11 @@ def generateCertificates(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     #yellow = session.query(Application).filter_by(promotional_id=promotional_id, color="yellow").order_by(Application.lastName).all()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
-    title = promotional.date + " - " + promotional.type + ": " + color
+    title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     output = PdfFileWriter()
     
-    date = promotional.date
+    date = promotional.date.strftime("%B %d, %Y")
 
     for application in applications:
         name = application.firstName + " " + application.lastName
@@ -139,7 +139,7 @@ def generateCertificates(promotional_id, color):
             c.setFont('Helvetica', 36)
             c.drawCentredString(305,372, application.rank)
             c.setFont('Helvetica', 15)
-            c.drawCentredString(210,330, date)
+            c.drawString(180,330, date)
             c.drawCentredString(200,285,"Sensei Sue, Sensei Nobu")
 
         c = canvas.Canvas(infoBuffer)
@@ -174,12 +174,12 @@ def generateJudgesPackets(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     #yellow = session.query(Application).filter_by(promotional_id=promotional_id, color="yellow").order_by(Application.lastName).all()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).order_by(Application.rank).all()
-    title = promotional.date + " - " + promotional.type + ": " + color
+    title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     output = PdfFileWriter()
     infoBuffer = StringIO.StringIO()
     c = canvas.Canvas(infoBuffer)
-    date = promotional.date
+    date = promotional.date.strftime("%B %d, %Y")
     judgesPacket = PdfFileReader(open("RankingSheet.pdf", "rb"))
     judgesPacketPage = judgesPacket.getPage(0)
     counter = 0
