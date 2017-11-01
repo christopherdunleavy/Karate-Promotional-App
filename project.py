@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Board Game Catalog Application"
+APPLICATION_NAME = "Karate Promotional Organizer"
 
 
 # Connect to Database and create database session
@@ -298,6 +298,29 @@ def addApplication(promotional_id):
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         session.commit()
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
+
+@app.route('/<int:promotional_id>/<int:application_id>/edit', methods=['GET', 'POST'])
+def editApplication(promotional_id, application_id):
+    editedApplication = session.query(Application).filter_by(id=application_id).one()
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    
+    if request.method == 'POST':
+        if request.form['firstName']:
+            editedApplication.name = request.form['lastName']
+        if request.form['lastName']:
+            editedApplication.description = request.form['lastName']
+        if request.form['birthDate']:
+            editedApplication.price = request.form['birthDate']
+        if request.form['rank']:
+        	editedApplication.rank = request.form['rank']
+       
+        session.add(editedApplication)
+        session.commit()
+        flash('Application Successfully Edited')
+        return redirect(url_for('showPromotional', promotional_id=promotional_id))
+    else:
+        return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
+
 
 def rank_to_belt(argument):
     switcher = {

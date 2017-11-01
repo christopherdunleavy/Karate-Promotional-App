@@ -19,6 +19,7 @@
 			<div class="btn-group">
 				<a class="btn btn-outline-primary" href="{{url_for('generateCertificates',promotional_id=promotional_id, color=color)}}">Generate certificates for {{color}}</a>
 				<a class="btn btn-outline-primary" href="{{url_for('generateJudgesPackets',promotional_id=promotional_id, color=color)}}">Generate judge's packets for {{color}}</a>
+				<a class="btn btn-outline-primary" href="#">Pairings for {{color}}</a>
 			</div>
 			<a href="#" class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-user-plus" aria-hidden="true"></i> Add Application</a>
 	<table class="table table-hover">
@@ -37,6 +38,7 @@
 		  	<td>{{application.firstName}}</td>
 		  	<td>{{application.birthDate}}</td>
 		  	<td>{{application.rank}}</td>
+		  	<td><a href="{{url_for('editApplication', promotional_id = promotional_id, application_id=application.id ) }}">Edit</a>
 		  </tr>
 		  {% endfor %}
 	  </tbody>
