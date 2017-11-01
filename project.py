@@ -304,11 +304,11 @@ def editApplication(promotional_id, application_id):
 
     if request.method == 'POST':
         if request.form['firstName']:
-            editedApplication.name = request.form['lastName']
+            editedApplication.firstName = request.form['firstName']
         if request.form['lastName']:
-            editedApplication.description = request.form['lastName']
+            editedApplication.lastName = request.form['lastName']
         if request.form['birthDate']:
-            editedApplication.price = request.form['birthDate']
+            editedApplication.birthDate = request.form['birthDate']
         if request.form['rank']:
         	editedApplication.rank = request.form['rank']
 
