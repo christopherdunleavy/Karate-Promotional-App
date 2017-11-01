@@ -19,27 +19,27 @@
 		</div>
 		<div class="form-group">
 			<label>Rank </label>&nbsp;
-			<select name="rank" class="form-control">
-				<option value="10thkyu">10th Kyu</option>
-				<option value="9thkyu">9th Kyu</option>
-				<option value="8thkyu">8th Kyu</option>
-				<option value="7thkyu">7th Kyu</option>
-				<option value="6thkyu">6th Kyu</option>
-				<option value="5thkyu">5th Kyu</option>
-				<option value="4thkyu">4th Kyu</option>
-				<option value="3rdkyu">3rd Kyu</option>
-				<option value="2ndkyu">2nd Kyu</option>
-				<option value="1stkyu">1st Kyu</option>
-				<option value="1stdan">1st Dan</option>
-				<option value="2nddan">2nd Dan</option>
-				<option value="3rddan">3rd Dan</option>
-				<option value="4thdan">4th Dan</option>
-				<option value="5thdan">5th Dan</option>
-				<option value="6thdan">6th Dan</option>
-				<option value="7thdan">7th Dan</option>
-				<option value="8thdan">8th Dan</option>
-				<option value="9thdan">9th Dan</option>
-				<option value="10thdan">10th Dan</option>
+			<select name="rank" class="form-control" value="{{application.rank}}">
+                <option value="10thkyu" {% if application.rank == "10thkyu" %}selected{% endif %}>10th Kyu</option>
+				<option value="9thkyu" {% if application.rank == "9thkyu" %}selected{% endif %}>9th Kyu</option>
+				<option value="8thkyu" {% if application.rank == "8thkyu" %}selected{% endif %}>8th Kyu</option>
+				<option value="7thkyu" {% if application.rank == "7thkyu" %}selected{% endif %}>7th Kyu</option>
+				<option value="6thkyu" {% if application.rank == "6thkyu" %}selected{% endif %}>6th Kyu</option>
+				<option value="5thkyu" {% if application.rank == "5thkyu" %}selected{% endif %}>5th Kyu</option>
+				<option value="4thkyu" {% if application.rank == "4thkyu" %}selected{% endif %}>4th Kyu</option>
+				<option value="3rdkyu" {% if application.rank == "3rdkyu" %}selected{% endif %}>3rd Kyu</option>
+				<option value="2ndkyu" {% if application.rank == "2ndkyu" %}selected{% endif %}>2nd Kyu</option>
+				<option value="1stkyu" {% if application.rank == "1stkyu" %}selected{% endif %}>1st Kyu</option>
+				<option value="1stdan" {% if application.rank == "1stdan" %}selected{% endif %}>1st Dan</option>
+				<option value="2nddan" {% if application.rank == "2nddan" %}selected{% endif %}>2nd Dan</option>
+				<option value="3rddan" {% if application.rank == "3rddan" %}selected{% endif %}>3rd Dan</option>
+				<option value="4thdan" {% if application.rank == "4thdan" %}selected{% endif %}>4th Dan</option>
+				<option value="5thdan" {% if application.rank == "5thdan" %}selected{% endif %}>5th Dan</option>
+				<option value="6thdan" {% if application.rank == "6thdan" %}selected{% endif %}>6th Dan</option>
+				<option value="7thdan" {% if application.rank == "7thdan" %}selected{% endif %}>7th Dan</option>
+				<option value="8thdan" {% if application.rank == "8thdan" %}selected{% endif %}>8th Dan</option>
+				<option value="9thdan" {% if application.rank == "9thdan" %}selected{% endif %}>9th Dan</option>
+				<option value="10thdan" {% if application.rank == "10thdan" %}selected{% endif %}>10th Dan</option>
 			</select>
 		</div>
 	</div>
