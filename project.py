@@ -97,7 +97,6 @@ def showPromotionalColor(promotional_id, color):
             sideB = unmatchedApplications.pop(0)
 
         tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
-        print tup
         pairings.append(tup)
 
     if len(unmatchedApplications) > 0:

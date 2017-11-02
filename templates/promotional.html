@@ -38,7 +38,7 @@
 		  	<td>{{application.firstName}}</td>
 		  	<td>{{application.birthDate}}</td>
 		  	<td>{{application.rank}}</td>
-		  	<td><a href="{{url_for('editApplication', promotional_id = promotional_id, application_id=application.id ) }}">Edit</a>
+		  	<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a>
 		  </tr>
 		  {% endfor %}
 	  </tbody>
@@ -47,8 +47,8 @@
 
 	<div id="editModal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
-			<div class="modal-content">
-
+			<div class="modal-content" id="editModalCondent">
+			<p>poop</p>
 			</div>
 		</div>
 	</div>
