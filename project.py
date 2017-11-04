@@ -9,8 +9,6 @@ from database_setup import Base, Promotional, Application, Pairing
 from flask import session as login_session
 import random
 import string
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangeError
 import httplib2
 import json
 from flask import make_response
@@ -69,7 +67,7 @@ def showPromotionalColor(promotional_id, color):
 
     error = None
     if request.args.get('error') != None:
-    		error = errors[request.args.get('error')] 
+    		error = errors[request.args.get('error')]
 
     def makeSelect(selected, name):
         if selected != None:
@@ -89,7 +87,7 @@ def showPromotionalColor(promotional_id, color):
         else:
             select = None
         return select
-    
+
     pairings = []
     for pairing in existingPairings:
         sideA = pairing.application_A
@@ -99,7 +97,6 @@ def showPromotionalColor(promotional_id, color):
             sideB = unmatchedApplications.pop(0)
 
         tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
-        print tup
         pairings.append(tup)
 
     if len(unmatchedApplications) > 0:
@@ -123,16 +120,16 @@ def generateCertificates(promotional_id, color):
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     output = PdfFileWriter()
-    
+
     date = promotional.date.strftime("%B %d, %Y")
 
     for application in applications:
         name = application.firstName + " " + application.lastName
         certificate = PdfFileReader(open("promotionalCertificate.pdf", "rb"))
         certificatePage = certificate.getPage(0)
-        
+
         infoBuffer = StringIO.StringIO()
-        
+
         def hello(c):
             c.setFont('Helvetica', 24)
             c.drawCentredString(305,452, name)
@@ -147,7 +144,7 @@ def generateCertificates(promotional_id, color):
         hello(c)
         c.showPage()
         c.save()
-        
+
         infoBuffer.seek(0)
         info = PdfFileReader(infoBuffer)
         certificatePage.mergePage(info.getPage(0))
@@ -159,9 +156,9 @@ def generateCertificates(promotional_id, color):
 
     pdfOut = outputStream.getvalue()
     outputStream.close()
-    
+
     fileName = color + " certificates.pdf"
-    
+
     response = make_response(pdfOut)
     response.headers['Content-Disposition'] = "attachment; filename=" + fileName
     response.mimetype = 'application/pdf'
@@ -273,7 +270,7 @@ def updatePairings(promotional_id, color):
             existingApplications.append(sideA_id)
 
             if (str(i)+"sideB") in request.form:
-                sideB_id=request.form[str(i)+"sideB"] 
+                sideB_id=request.form[str(i)+"sideB"]
                 if sideB_id in existingApplications:
             		return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=error))
             	existingApplications.append(sideB_id)
@@ -303,18 +300,18 @@ def addApplication(promotional_id):
 def editApplication(promotional_id, application_id):
     editedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    
+
     if request.method == 'POST':
         if request.form['firstName']:
-            editedApplication.name = request.form['lastName']
+            editedApplication.firstName = request.form['firstName']
         if request.form['lastName']:
-            editedApplication.description = request.form['lastName']
+            editedApplication.lastName = request.form['lastName']
         if request.form['birthDate']:
-            editedApplication.price = request.form['birthDate']
+            editedApplication.birthDate = request.form['birthDate']
         if request.form['rank']:
         	editedApplication.rank = request.form['rank']
         	editedApplication.color = rank_to_belt(request.form['rank'])
-       
+
         session.add(editedApplication)
         session.commit()
         flash('Application Successfully Edited')
