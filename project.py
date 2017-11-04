@@ -310,6 +310,7 @@ def editApplication(promotional_id, application_id):
             editedApplication.birthDate = request.form['birthDate']
         if request.form['rank']:
         	editedApplication.rank = request.form['rank']
+        	editedApplication.color = rank_to_belt(request.form['rank'])
 
         session.add(editedApplication)
         session.commit()
