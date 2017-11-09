@@ -319,6 +319,18 @@ def editApplication(promotional_id, application_id):
     else:
         return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
 
+@app.route('/<int:promotional_id>/<int:application_id>/delete', methods=['GET', 'POST'])
+def deleteApplication(promotional_id, application_id):
+    deletedApplication = session.query(Application).filter_by(id=application_id).one()
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+
+    if request.method == 'POST':
+        session.delete(deletedApplication)
+        session.commit()
+        flash('Application Successfully Deleted')
+        return redirect(url_for('showPromotional', promotional_id=promotional_id))
+    else:
+        return render_template('deleteapplication.html', promotional_id=promotional_id, application_id=application_id, application=deletedApplication)
 
 def rank_to_belt(argument):
     switcher = {

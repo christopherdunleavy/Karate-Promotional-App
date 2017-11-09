@@ -1,0 +1,12 @@
+<form method="post" action="{{url_for('deleteApplication',promotional_id=promotional_id, application_id=application_id)}}">
+	<div class="modal-header">
+		<h4 class="modal-title">Delete Application</h4>
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+	</div>
+	<div class="modal-body">
+		Are you sure you want to delete {{application.firstName + " " + application.lastName}}?		
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-default">Delete</button>
+	</div>
+</form>
