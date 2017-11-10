@@ -6,144 +6,115 @@
 	<div class="row py-5">
 		<div class="col-md-2">
 			<ul class="nav nav-pills flex-column">
-			<li class="nav-item"><a class="nav-link {% if not color %} active {% endif %}" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">All</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'yellow' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='yellow')}}">Yellow</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'blue' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='blue')}}">Blue</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'green' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='green')}}">Green</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'purple' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='purple')}}">Purple</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'brown' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='brown')}}">Brown</a></li>
-			<li class="nav-item"><a class="nav-link {% if color == 'black' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='black')}}">Black</a></li>
+				<li class="nav-item"><a class="nav-link {% if not color %} active {% endif %}" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">All</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'yellow' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='yellow')}}">Yellow</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'blue' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='blue')}}">Blue</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'green' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='green')}}">Green</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'purple' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='purple')}}">Purple</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'brown' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='brown')}}">Brown</a></li>
+				<li class="nav-item"><a class="nav-link {% if color == 'black' %} active {% endif %}" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color='black')}}">Black</a></li>
 			</ul>
 		</div>
 		<div class="col-md-10">
 			<div class="btn-group">
 				<a class="btn btn-outline-primary" href="{{url_for('generateCertificates',promotional_id=promotional_id, color=color)}}">Generate certificates for {{color}}</a>
 				<a class="btn btn-outline-primary" href="{{url_for('generateJudgesPackets',promotional_id=promotional_id, color=color)}}">Generate judge's packets for {{color}}</a>
-				<a class="btn btn-outline-primary" href="#">Pairings for {{color}}</a>
+				<a class="btn btn-outline-primary" href="{{url_for('showPairings',promotional_id=promotional_id, color=color)}}">Pairings for {{color}}</a>
 			</div>
 			<a href="#" class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-user-plus" aria-hidden="true"></i> Add Application</a>
-	<table class="table table-hover">
-	  <thead>
-		  <tr>
-		    <th>Last Name</th>
-		    <th>First Name</th>
-		    <th>Birth Date</th>
-		    <th>Rank</th>
-		  </tr>
-	  </thead>
-	  <tbody>
-		  {% for application in applications %}
-		  <tr>
-		  	<td>{{application.lastName}}</td>
-		  	<td>{{application.firstName}}</td>
-		  	<td>{{application.birthDate}}</td>
-		  	<td>{{application.rank}}</td>
-		  	<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a></td>
-		  	<td><a href="#" onclick="openDeleteModal({{application.id}},{{promotional_id}})">Delete</a></td>
-		  </tr>
-		  {% endfor %}
-	  </tbody>
-	</table>
-	</div>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Last Name</th>
+						<th>First Name</th>
+						<th>Birth Date</th>
+						<th>Rank</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for application in applications %}
+					<tr>
+						<td>{{application.lastName}}</td>
+						<td>{{application.firstName}}</td>
+						<td>{{application.birthDate}}</td>
+						<td>{{application.rank}}</td>
+						<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a></td>
+						<td><a href="#" onclick="openDeleteModal({{application.id}},{{promotional_id}})">Delete</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 
-	<div id="editModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content" id="editModalContent">
+		<div id="editModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content" id="editModalContent">
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div id="deleteModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content" id="deleteModalContent">
+		<div id="deleteModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content" id="deleteModalContent">
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- Modal -->
-	<div id="myModal" class="modal fade" role="dialog">
-	  <div class="modal-dialog">
-	    <!-- Modal content-->
-	    <div class="modal-content">
-	      <form method="post" action="{{url_for('addApplication', promotional_id=promotional_id)}}">
-		      <div class="modal-header">
-		        <h4 class="modal-title">Add Application</h4>
-		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<form method="post" action="{{url_for('addApplication', promotional_id=promotional_id)}}">
+						<div class="modal-header">
+							<h4 class="modal-title">Add Application</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
 
-		      </div>
-		      <div class="modal-body">
-		      	<div class="form-group">
-		        <label>First Name </label>&nbsp;<input type="text" class="form-control" name="firstName"><br>
-		        </div>
-		        <div class="form-group">
-		        <label>Last Name </label>&nbsp;<input type="text" class="form-control" name="lastName"><br>
-		        </div>
-		        <div class="form-group">
-		        <label>Birth Date </label>&nbsp;<input type="date" class="form-control" name="birthDate"><br>
-		        </div>
-		        <div class="form-group">
-		        <label>Rank </label>&nbsp;
-		        <select name="rank" class="form-control">
-		        	<option value="10thkyu">10th Kyu</option>
-		        	<option value="9thkyu">9th Kyu</option>
-		        	<option value="8thkyu">8th Kyu</option>
-		        	<option value="7thkyu">7th Kyu</option>
-		        	<option value="6thkyu">6th Kyu</option>
-		        	<option value="5thkyu">5th Kyu</option>
-		        	<option value="4thkyu">4th Kyu</option>
-		        	<option value="3rdkyu">3rd Kyu</option>
-		        	<option value="2ndkyu">2nd Kyu</option>
-		        	<option value="1stkyu">1st Kyu</option>
-		        	<option value="1stdan">1st Dan</option>
-		        	<option value="2nddan">2nd Dan</option>
-		        	<option value="3rddan">3rd Dan</option>
-		        	<option value="4thdan">4th Dan</option>
-		        	<option value="5thdan">5th Dan</option>
-		        	<option value="6thdan">6th Dan</option>
-		        	<option value="7thdan">7th Dan</option>
-		        	<option value="8thdan">8th Dan</option>
-		        	<option value="9thdan">9th Dan</option>
-		        	<option value="10thdan">10th Dan</option>
-		        </select>
-		        </div>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="submit" class="btn btn-default">Submit</button>
-		      </div>
-	      </form>
-	    </div>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>First Name </label>&nbsp;<input type="text" class="form-control" name="firstName"><br>
+							</div>
+							<div class="form-group">
+								<label>Last Name </label>&nbsp;<input type="text" class="form-control" name="lastName"><br>
+							</div>
+							<div class="form-group">
+								<label>Birth Date </label>&nbsp;<input type="date" class="form-control" name="birthDate"><br>
+							</div>
+							<div class="form-group">
+								<label>Rank </label>&nbsp;
+								<select name="rank" class="form-control">
+									<option value="10thkyu">10th Kyu</option>
+									<option value="9thkyu">9th Kyu</option>
+									<option value="8thkyu">8th Kyu</option>
+									<option value="7thkyu">7th Kyu</option>
+									<option value="6thkyu">6th Kyu</option>
+									<option value="5thkyu">5th Kyu</option>
+									<option value="4thkyu">4th Kyu</option>
+									<option value="3rdkyu">3rd Kyu</option>
+									<option value="2ndkyu">2nd Kyu</option>
+									<option value="1stkyu">1st Kyu</option>
+									<option value="1stdan">1st Dan</option>
+									<option value="2nddan">2nd Dan</option>
+									<option value="3rddan">3rd Dan</option>
+									<option value="4thdan">4th Dan</option>
+									<option value="5thdan">5th Dan</option>
+									<option value="6thdan">6th Dan</option>
+									<option value="7thdan">7th Dan</option>
+									<option value="8thdan">8th Dan</option>
+									<option value="9thdan">9th Dan</option>
+									<option value="10thdan">10th Dan</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-default">Submit</button>
+						</div>
+					</form>
+				</div>
 
-	  </div>
-	</div>
-
-	<br>
-	<br>
-	<br>
-	{% if error %}
-	<h1>{{error}}</h1>
-	{% endif %}
-	<form method="post" action="{{url_for('updatePairings', promotional_id=promotional_id, color=color)}}">
-		<table class="table table-hover">
-			<tr>
-				<th>Left</th>
-				<th>Right</th>
-			</tr>
-			{% if pairings %}
-			{% for pairing in pairings %}
-		    <tr>
-		        <th>{{pairing.sideA|safe}}</th>
-		        {% if pairing.sideB != None %}
-		        <th>{{pairing.sideB|safe}}</th>
-		        {% else %}
-		        <th>None</th>
-		        {% endif %}
-		    </tr>
-		    {% endfor %}
-		    {% endif %}
-
-		</table>
-		<button type="submit" class="btn btn-default">Submit</button>
-	</form>
-	{% endblock %}
+			</div>
+		</div>
 	</div>
 </div>
+{% endblock %}

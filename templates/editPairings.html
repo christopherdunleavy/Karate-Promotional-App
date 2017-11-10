@@ -4,29 +4,31 @@
 
 <div class="container">
 	<div class="row py-5">
-			<a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit pairings for {{color}}</a>
+		{% if error %}
+		<h1>{{error}}</h1>
+		{% endif %}
+		<form method="post" action="{{url_for('editPairings', promotional_id=promotional_id, color=color)}}">
 			<table class="table table-hover">
-				<thead>
 				<tr>
 					<th>Left</th>
 					<th>Right</th>
 				</tr>
-				</thead>
-				<tbody>
 				{% if pairings %}
 				{% for pairing in pairings %}
 				<tr>
-					<td>{{pairing.sideA.fullName}}</td>
+					<th>{{pairing.sideA|safe}}</th>
 					{% if pairing.sideB != None %}
-					<td>{{pairing.sideB.fullName}}</td>
+					<th>{{pairing.sideB|safe}}</th>
 					{% else %}
-					<td>None</td>
+					<th>None</th>
 					{% endif %}
 				</tr>
 				{% endfor %}
 				{% endif %}
-				</tbody>
+
 			</table>
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>
 	</div>
 </div>
 {% endblock %}

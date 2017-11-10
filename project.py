@@ -253,26 +253,100 @@ def generateJudgesPackets(promotional_id, color):
     #return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color)
 
 @app.route('/<int:promotional_id>/<string:color>/pairings', methods=['GET', 'POST'])
-def updatePairings(promotional_id, color):
+def showPairings(promotional_id, color):
+    existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
+    unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
+    title="test pairings"
+
+    pairings = []
+    for pairing in existingPairings:
+        sideA = pairing.application_A
+        sideB = pairing.application_B
+
+        if sideB == None and len(unmatchedApplications) > 0:
+            sideB = unmatchedApplications.pop(0)
+
+        tup = {"sideA":sideA,"sideB":sideB}
+        pairings.append(tup)
+
+    if len(unmatchedApplications) > 0:
+        i = 0
+        name = len(existingPairings)
+        while i < len(unmatchedApplications):
+            tup = {"sideA":unmatchedApplications[i],"sideB":unmatchedApplications[i+1] if i+1 < len(unmatchedApplications) else None}
+            i += 2
+            name += 1
+            pairings.append(tup)
+    return render_template('pairings.html', title=title, promotional_id=promotional_id, color=color, pairings=pairings)
+
+
+@app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])
+def editPairings(promotional_id, color):
+    unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
+    existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
+    title="test edit pairings"
+    error = None
+    if request.args.get('error') != None:
+    	error = errors[request.args.get('error')]
+
+    def makeSelect(selected, name):
+        if selected != None:
+            select = "<select name='%s'>" % name
+            endSelect = "</select>"
+
+            for application in applications:
+                fullName = application.fullName
+                value = application.id
+                if application == selected:
+                    option = "<option value='%s' selected>%s</option>" % (value, fullName)
+                else:
+                    option = "<option value='%s'>%s</option>" % (value, fullName)
+                select = select + option
+
+            select = select + endSelect
+        else:
+            select = None
+        return select
+
+    pairings = []
+    for pairing in existingPairings:
+        sideA = pairing.application_A
+        sideB = pairing.application_B
+
+        if sideB == None and len(unmatchedApplications) > 0:
+            sideB = unmatchedApplications.pop(0)
+
+        tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
+        pairings.append(tup)
+
+    if len(unmatchedApplications) > 0:
+        i = 0
+        name = len(existingPairings)
+        while i < len(unmatchedApplications):
+            tup = {"sideA":makeSelect(unmatchedApplications[i], str(name) + "sideA"),"sideB":makeSelect(unmatchedApplications[i+1], str(name) + "sideB") if i+1 < len(unmatchedApplications) else None}
+            i += 2
+            name += 1
+            pairings.append(tup)
+
     if request.method == 'POST':
-        print request.form
         session.query(Pairing).delete()
 
         existingApplications = []
         error = "1"
         i = 0
         while i <= len(request.form)/2:
-            sideA_id=request.form[str(i)+"sideA"]
+            sideA_id=request.form.get(str(i)+"sideA")
 
             if sideA_id in existingApplications:
-            	return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=error))
+            	return redirect(url_for('editPairings', promotional_id=promotional_id, color=color, error=error))
 
             existingApplications.append(sideA_id)
 
             if (str(i)+"sideB") in request.form:
-                sideB_id=request.form[str(i)+"sideB"]
+                sideB_id=request.form.get(str(i)+"sideB")
                 if sideB_id in existingApplications:
-            		return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=error))
+            		return redirect(url_for('editPairings', promotional_id=promotional_id, color=color, error=error))
             	existingApplications.append(sideB_id)
             else:
                 sideB_id = None
@@ -281,8 +355,10 @@ def updatePairings(promotional_id, color):
             i += 1
 
         session.commit()
-        return redirect(url_for('showPromotionalColor', promotional_id=promotional_id, color=color, error=None))
+        return redirect(url_for('showPairings', promotional_id=promotional_id, color=color))
 
+    else:
+    	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, pairings=pairings)
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
 def addApplication(promotional_id):
