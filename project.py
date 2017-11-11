@@ -3,7 +3,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing
 from flask import session as login_session
@@ -401,6 +401,9 @@ def deleteApplication(promotional_id, application_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
     if request.method == 'POST':
+        if deletedApplication.pairingA or deletedApplication.pairingB:
+            pairing = session.query(Pairing).filter(or_(Pairing.application_A == deletedApplication, Pairing.application_B == deletedApplication)).one()
+            session.delete(pairing)
         session.delete(deletedApplication)
         session.commit()
         flash('Application Successfully Deleted')
