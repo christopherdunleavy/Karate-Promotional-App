@@ -296,12 +296,12 @@ def editPairings(promotional_id, color):
             endSelect = "</select>"
 
             for application in applications:
-                fullName = application.fullName
+                fullNameRank = application.fullName + " - " + application.rank
                 value = application.id
                 if application == selected:
-                    option = "<option value='%s' selected>%s</option>" % (value, fullName)
+                    option = "<option value='%s' selected>%s</option>" % (value, fullNameRank)
                 else:
-                    option = "<option value='%s'>%s</option>" % (value, fullName)
+                    option = "<option value='%s'>%s</option>" % (value, fullNameRank)
                 select = select + option
 
             select = select + endSelect

@@ -16,9 +16,9 @@
 				{% if pairings %}
 				{% for pairing in pairings %}
 				<tr>
-					<td>{{pairing.sideA.fullName}}</td>
+					<td>{{pairing.sideA.fullName}} - {{pairing.sideA.rank}}</td>
 					{% if pairing.sideB != None %}
-					<td>{{pairing.sideB.fullName}}</td>
+					<td>{{pairing.sideB.fullName}} - {{pairing.sideB.rank}}</td>
 					{% else %}
 					<td>None</td>
 					{% endif %}
