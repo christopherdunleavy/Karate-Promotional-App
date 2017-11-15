@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -44,7 +44,7 @@ def home():
 def addPromotional():
     if request.method == 'POST':
         newPromotional = Promotional(
-            date=request.form['promotionalDate'], type=request.form['type'])
+            date=datetime.strptime(request.form['promotionalDate'], '%Y-%m-%d'), type=request.form['type'])
         session.add(newPromotional)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         session.commit()
