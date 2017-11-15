@@ -330,7 +330,8 @@ def editPairings(promotional_id, color):
             pairings.append(tup)
 
     if request.method == 'POST':
-        session.query(Pairing).delete()
+    	for pairing in existingPairings:
+    		session.delete(pairing)
 
         existingApplications = []
         error = "1"
