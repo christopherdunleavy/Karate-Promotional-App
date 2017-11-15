@@ -335,7 +335,7 @@ def editPairings(promotional_id, color):
         existingApplications = []
         error = "1"
         i = 0
-        while i <= len(request.form)/2:
+        while i < len(request.form)/2:
             sideA_id=request.form.get(str(i)+"sideA")
 
             if sideA_id in existingApplications:
