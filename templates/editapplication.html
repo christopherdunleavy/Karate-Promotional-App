@@ -15,8 +15,8 @@
 		</div>
 		<div class="form-group">
 			<label>Rank </label>&nbsp;
-			<select name="rank" class="form-control" value="{{application.rank}}">
-                <option value="10thkyu" {% if application.rank == "10thkyu" %}selected{% endif %}>10th Kyu</option>
+			<select name="rank" class="form-control">
+				<option value="10thkyu" {% if application.rank == "10thkyu" %}selected{% endif %}>10th Kyu</option>
 				<option value="9thkyu" {% if application.rank == "9thkyu" %}selected{% endif %}>9th Kyu</option>
 				<option value="8thkyu" {% if application.rank == "8thkyu" %}selected{% endif %}>8th Kyu</option>
 				<option value="7thkyu" {% if application.rank == "7thkyu" %}selected{% endif %}>7th Kyu</option>
@@ -36,6 +36,23 @@
 				<option value="8thdan" {% if application.rank == "8thdan" %}selected{% endif %}>8th Dan</option>
 				<option value="9thdan" {% if application.rank == "9thdan" %}selected{% endif %}>9th Dan</option>
 				<option value="10thdan" {% if application.rank == "10thdan" %}selected{% endif %}>10th Dan</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label>Belt Size </label>&nbsp;
+			<select name="beltSize" class="form-control" value>
+				<option value="0000" {% if application.beltSize == "0000" %}selected{% endif %}>0000</option>
+				<option value="000" {% if application.beltSize == "000" %}selected{% endif %}>000</option>
+				<option value="00" {% if application.beltSize == "00" %}selected{% endif %}>00</option>
+				<option value="0" {% if application.beltSize == "0" %}selected{% endif %}>0</option>
+				<option value="1" {% if application.beltSize == "1" %}selected{% endif %}>1</option>
+				<option value="2" {% if application.beltSize == "2" %}selected{% endif %}>2</option>
+				<option value="3" {% if application.beltSize == "3" %}selected{% endif %}>3</option>
+				<option value="4" {% if application.beltSize == "4" %}selected{% endif %}>4</option>
+				<option value="5" {% if application.beltSize == "5" %}selected{% endif %}>5</option>
+				<option value="6" {% if application.beltSize == "6" %}selected{% endif %}>6</option>
+				<option value="7" {% if application.beltSize == "7" %}selected{% endif %}>7</option>
+				<option value="8" {% if application.beltSize == "8" %}selected{% endif %}>8</option>
 			</select>
 		</div>
 	</div>

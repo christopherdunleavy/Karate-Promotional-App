@@ -29,6 +29,7 @@
 						<th>First Name</th>
 						<th>Birth Date</th>
 						<th>Rank</th>
+						<th>Belt Size</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -40,6 +41,7 @@
 							{{application.birthDate.strftime("%m/%d/%Y")}}
 							{% endif %}</td>
 						<td>{{application.rank}}</td>
+						<td>{{application.beltSize}}</td>
 						<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a></td>
 						<td><a href="#" onclick="openDeleteModal({{application.id}},{{promotional_id}})">Delete</a></td>
 					</tr>
@@ -106,6 +108,23 @@
 									<option value="8thdan">8th Dan</option>
 									<option value="9thdan">9th Dan</option>
 									<option value="10thdan">10th Dan</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Belt Size </label>&nbsp;
+								<select name="beltSize" class="form-control">
+									<option value="0000">0000</option>
+									<option value="000">000</option>
+									<option value="00">00</option>
+									<option value="0">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
 								</select>
 							</div>
 						</div>

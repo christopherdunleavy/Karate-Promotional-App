@@ -31,6 +31,7 @@ class Application(Base):
     birthDate = Column(Date, nullable=True)
     rank = Column(String(20), nullable=False)
     color = Column(String(20), nullable=False)
+    beltSize = Column(String(20), nullable=False)
     promotional_id = Column(Integer, ForeignKey('promotional.id'))
     promotional = relationship("Promotional", back_populates="applications")
 
