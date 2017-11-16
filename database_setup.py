@@ -28,7 +28,7 @@ class Application(Base):
     id = Column(Integer, primary_key=True)
     firstName = Column(String(80), nullable=False)
     lastName = Column(String(80), nullable=False)
-    birthDate = Column(String(20), nullable=False)
+    birthDate = Column(Date, nullable=True)
     rank = Column(String(20), nullable=False)
     color = Column(String(20), nullable=False)
     promotional_id = Column(Integer, ForeignKey('promotional.id'))

@@ -36,7 +36,9 @@
 					<tr>
 						<td>{{application.lastName}}</td>
 						<td>{{application.firstName}}</td>
-						<td>{{application.birthDate}}</td>
+						<td>{% if application.birthDate != None %}
+							{{application.birthDate.strftime("%m/%d/%Y")}}
+							{% endif %}</td>
 						<td>{{application.rank}}</td>
 						<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a></td>
 						<td><a href="#" onclick="openDeleteModal({{application.id}},{{promotional_id}})">Delete</a></td>
