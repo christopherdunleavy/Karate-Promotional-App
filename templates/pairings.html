@@ -4,16 +4,16 @@
 
 <div class="container">
 	<div class="row py-5">
-			<a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit pairings for {{color}}</a>
-			<a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back to {{color}}</a>
-			<table class="table table-hover">
-				<thead>
+		<a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit pairings for {{color}}</a>
+		<a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back to {{color}}</a>
+		<table class="table table-hover">
+			<thead>
 				<tr>
 					<th>Side A</th>
 					<th>Side B</th>
 				</tr>
-				</thead>
-				<tbody>
+			</thead>
+			<tbody>
 				{% if pairings %}
 				{% for pairing in pairings %}
 				<tr>
@@ -26,8 +26,8 @@
 				</tr>
 				{% endfor %}
 				{% endif %}
-				</tbody>
-			</table>
+			</tbody>
+		</table>
 	</div>
 </div>
 {% endblock %}

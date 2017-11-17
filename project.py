@@ -3,7 +3,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
-from sqlalchemy import create_engine, asc, or_
+from sqlalchemy import create_engine, asc, and_, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing
 from flask import session as login_session
@@ -110,12 +110,32 @@ def showPromotionalColor(promotional_id, color):
 
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, pairings=pairings, error=error)
 
+@app.route('/<int:promotional_id>/orderBelts', methods=['GET', 'POST'])
+def orderBelts(promotional_id):
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).filter(Application.rank.in_(['10thkyu', '9thkyu', '7thkyu', '5thkyu', '3rdkyu', '1stdan'])).all()
+    title = "Belts for " + promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
 
+    sizes = {"yellow":{},
+	    "blue":{},
+	    "green":{},
+	    "pruple":{},
+	    "brown":{},
+	    "black":{}
+    }
+
+    for application in applications:
+    	if application.beltSize in sizes[application.color].keys():
+    		sizes[application.color][application.beltSize] += 1
+    	else:
+    		sizes[application.color][application.beltSize] = 1
+    print sizes
+    print applications
+    return render_template('orderBelts.html', title=title, promotional_id=promotional_id, sizes=sizes)
 
 @app.route('/<int:promotional_id>/<string:color>/certificates', methods=['GET', 'POST'])
 def generateCertificates(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    #yellow = session.query(Application).filter_by(promotional_id=promotional_id, color="yellow").order_by(Application.lastName).all()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
