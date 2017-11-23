@@ -1,4 +1,3 @@
-#test
 from datetime import date, datetime
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
@@ -21,7 +20,6 @@ app = Flask(__name__)
 # CLIENT_ID = json.loads(
 #     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Karate Promotional Organizer"
-
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///promotional.db')

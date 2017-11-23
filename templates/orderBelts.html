@@ -1,16 +1,48 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "appheader.html" %}
-<div class="container">
-	<div class="row py-5">
-		<a class="btn btn-outline-primary" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">Back</a>
-		{% for color in sizes %}
-		<div class="row-py-5"><h4>{{color}} &nbsp;</h4>
-		{% for size in sizes[color] %}
-		{{size}}:{{sizes[color][size]}}<br>
-		{% endfor %}
-		</div>
-		{% endfor %}
-	</div>
+<div class="container py-5">
+    <div class="row pb-1">
+        <div class="col-md-12">
+            <a class="btn btn-outline-primary" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">Back</a>
+        </div>
+    </div>
+	{% for color in sizes %}
+        {% if sizes[color] != {} %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>    
+                            <th>Sizes for {{color.capitalize()}}</th>
+                            <th>Number of Belts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for size in sizes[color] %}
+                        <tr>
+                            <td>{{size}}</td>
+                            <td>{{sizes[color][size]}}</td>   
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
 </div>
 {% endblock %}
+
+
+<!-- <div class="row py-5">
+        <a class="btn btn-outline-primary" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">Back</a>
+        {% for color in sizes %}
+        <div class="row-py-5"><h4>{{color}} &nbsp;</h4>
+        {% for size in sizes[color] %}
+        {{size}}:{{sizes[color][size]}}<br>
+        {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+ -->
