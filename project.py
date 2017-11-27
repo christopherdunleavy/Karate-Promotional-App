@@ -52,9 +52,16 @@ def addPromotional():
 @app.route('/<int:promotional_id>/delete', methods=['GET', 'POST'])
 def deletePromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).all()
+    pairings = session.query(Pairing).filter_by(promotional_id=promotional_id).all()
+
 
     if request.method == 'POST':
         session.delete(promotional)
+        for pairing in pairings:
+            session.delete(pairing)
+        for application in applications:
+            session.delete(application)
         session.commit()
         flash('Promotional Successfully Deleted')
         return redirect(url_for('home'))
