@@ -134,10 +134,13 @@ def orderBelts(promotional_id):
     applications = session.query(Application).filter_by(promotional_id=promotional_id).filter(Application.rank.in_(['10thkyu', '9thkyu', '7thkyu', '5thkyu', '3rdkyu', '1stdan'])).all()
     title = "Belts for " + promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
 
+    orderedSizes = ['----','0000','000','00','0','1','2','3','4','5','6','7','8']
+    orderedColors = ['yellow','blue','green','purple','brown','black']
+
     sizes = {"yellow":{},
 	    "blue":{},
 	    "green":{},
-	    "pruple":{},
+	    "purple":{},
 	    "brown":{},
 	    "black":{}
     }
@@ -149,7 +152,7 @@ def orderBelts(promotional_id):
     		sizes[application.color][application.beltSize] = 1
     print sizes
     print applications
-    return render_template('orderBelts.html', title=title, promotional_id=promotional_id, sizes=sizes)
+    return render_template('orderBelts.html', title=title, promotional_id=promotional_id, sizes=sizes, orderedSizes=orderedSizes, orderedColors=orderedColors)
 
 @app.route('/<int:promotional_id>/<string:color>/certificates', methods=['GET', 'POST'])
 def generateCertificates(promotional_id, color):

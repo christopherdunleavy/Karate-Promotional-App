@@ -7,7 +7,7 @@
             <a class="btn btn-outline-primary" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">Back</a>
         </div>
     </div>
-	{% for color in sizes %}
+	{% for color in orderedColors %}
         {% if sizes[color] != {} %}
         <div class="row">
             <div class="col-md-12">
@@ -19,11 +19,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for size in sizes[color] %}
+                        {% for size in orderedSizes %}
+                        {% if size in sizes[color].keys() %}
                         <tr>
                             <td>{{size}}</td>
                             <td>{{sizes[color][size]}}</td>   
                         </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
