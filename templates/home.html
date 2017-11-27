@@ -6,6 +6,13 @@
 	<div class="row py-5">
 		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Promotional</button>
 
+        <div id="deleteModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="deleteModalContent">
+                </div>
+            </div>
+        </div>
+
 		<!-- Modal -->
         <div id="myModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -43,7 +50,8 @@
         </div>
         <ul>
             {% for promotional in promotionals %}
-            <li><a href="{{url_for('showPromotional', promotional_id=promotional.id)}}">{{promotional.date}} - {{promotional.type}}</a></li>
+            <li><a href="{{url_for('showPromotional', promotional_id=promotional.id)}}">{{promotional.date}} - {{promotional.type}}</a>
+            <a href="#" onclick="openDeletePromotionalModal({{promotional.id}})">Delete</a></li>
             {% endfor %}
         </ul>
     </div>

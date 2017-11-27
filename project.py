@@ -49,6 +49,18 @@ def addPromotional():
         session.commit()
         return redirect(url_for('home'))
 
+@app.route('/<int:promotional_id>/delete', methods=['GET', 'POST'])
+def deletePromotional(promotional_id):
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+
+    if request.method == 'POST':
+        session.delete(promotional)
+        session.commit()
+        flash('Promotional Successfully Deleted')
+        return redirect(url_for('home'))
+    else:
+        return render_template('deletepromotional.html', promotional_id=promotional_id)
+
 @app.route('/<int:promotional_id>', methods=['GET', 'POST'])
 def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
