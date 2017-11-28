@@ -13,6 +13,13 @@
             </div>
         </div>
 
+        <div id="editModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="editModalContent">
+                </div>
+            </div>
+        </div>
+
 		<!-- Modal -->
         <div id="myModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -48,12 +55,22 @@
                 </div>
             </div>
         </div>
-        <ul>
-            {% for promotional in promotionals %}
-            <li><a href="{{url_for('showPromotional', promotional_id=promotional.id)}}">{{promotional.date}} - {{promotional.type}}</a>
-            <a href="#" onclick="openDeletePromotionalModal({{promotional.id}})">Delete</a></li>
-            {% endfor %}
-        </ul>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Promotional</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for promotional in promotionals %}
+                <tr>
+                    <td><a href="{{url_for('showPromotional', promotional_id=promotional.id)}}">{{promotional.date}} - {{promotional.type}}</a></td>
+                    <td><a href="#" onclick="openEditPromotionalModal({{promotional.id}})">Edit</a></td>
+                    <td><a href="#" onclick="openDeletePromotionalModal({{promotional.id}})">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

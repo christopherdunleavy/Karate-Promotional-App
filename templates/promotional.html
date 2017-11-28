@@ -46,8 +46,8 @@
 							{% endif %}</td>
 						<td>{{application.rank}}</td>
 						<td>{{application.beltSize}}</td>
-						<td><a href="#" onclick="openEditModal({{application.id}},{{promotional_id}})">Edit</a></td>
-						<td><a href="#" onclick="openDeleteModal({{application.id}},{{promotional_id}})">Delete</a></td>
+						<td><a href="#" onclick="openEditApplicationModal({{application.id}},{{promotional_id}})">Edit</a></td>
+						<td><a href="#" onclick="openDeleteApplicationModal({{application.id}},{{promotional_id}})">Delete</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>

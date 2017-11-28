@@ -49,12 +49,31 @@ def addPromotional():
         session.commit()
         return redirect(url_for('home'))
 
+@app.route('/<int:promotional_id>/edit', methods=['GET', 'POST'])
+def editPromotional(promotional_id):
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+
+    if request.method == 'POST':
+        print "hey"
+        if request.form['date']:
+            promotional.date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+        else:
+            promotional.date = None
+        if request.form['type']:
+            promotional.type = request.form['type']
+        
+        session.add(promotional)
+        session.commit()
+        flash('Promotional Successfully Edited')
+        return redirect(url_for('home'))
+    else:
+        return render_template('editpromotional.html', promotional=promotional)
+
 @app.route('/<int:promotional_id>/delete', methods=['GET', 'POST'])
 def deletePromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).all()
     pairings = session.query(Pairing).filter_by(promotional_id=promotional_id).all()
-
 
     if request.method == 'POST':
         session.delete(promotional)
