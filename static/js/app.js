@@ -29,3 +29,11 @@ function openDeletePromotionalModal(promotional_id){
         $("#deleteModal").modal();
     }});
 }
+
+function openRegisterModal(){
+    var registerUrl = "/register";
+    $.ajax({url: registerUrl, success: function(result){
+        $("#registerModalContent").html(result);
+        $("#registerModal").modal();
+    }});
+}

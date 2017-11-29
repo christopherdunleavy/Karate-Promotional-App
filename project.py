@@ -34,6 +34,20 @@ errors = {"1":"Error: Duplicate"}
 def welcome():
     return render_template('welcome.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        pass
+    else:    
+        return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        pass
+    else:    
+        return render_template('register.html')
+
 @app.route('/home')
 def home():
     promotionals = session.query(Promotional).order_by(asc(Promotional.date))

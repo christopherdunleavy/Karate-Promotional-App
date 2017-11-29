@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "appheader.html" %}
+<!-- Trigger the modal with a button -->
+<div class="container">
+	<div class="row py-5">
+        <form method="post" action="{{url_for('login')}}">
+            <div class="form-group">
+                <label>Username </label>&nbsp;<input type="text" class="form-control" name="username"><br>
+            </div>
+            <div class="form-group">
+                <label>Password </label>&nbsp;<input type="text" class="form-control" name="password"><br>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-default">Log In</button>
+                <a href="#" onclick="openRegisterModal()">Register</a>
+            </div>
+        </form>
+
+        <div id="registerModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="registerModalContent">
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+{% endblock %} 
