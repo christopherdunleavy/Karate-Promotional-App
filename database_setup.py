@@ -6,6 +6,15 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = 'user'
+
+    id = Column(Integer, primary_key=True)
+    firstName = Column(String(80), nullable=False)
+    lastName = Column(String(80), nullable=False)
+    email = Column(String(80), nullable=False)
+    password = Column(String(80), nullable=False)
+
 class Promotional(Base):
     __tablename__ = 'promotional'
 

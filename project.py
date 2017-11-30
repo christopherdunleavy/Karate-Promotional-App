@@ -5,7 +5,7 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc, and_, or_
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Promotional, Application, Pairing
+from database_setup import Base, Promotional, Application, Pairing, User
 from flask import session as login_session
 import random
 import string
@@ -37,14 +37,38 @@ def welcome():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        pass
-    else:    
+        if request.form['email'] and request.form['password']:
+            email = request.form['email']
+            password = request.form['password']
+            user = session.query(User).filter_by(email=email, password=password).first()
+
+            if user:
+                return redirect(url_for('home'))
+            else:
+                error = "Wrong email or password"
+                return render_template('login.html', error=error)
+
+    else:
         return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        pass
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        confirmPassword = request.form['confirmPassword']
+
+        if password != confirmPassword:
+            error = "passwords don't match"
+            return render_template('register.html', error=error)
+
+        else:
+            user = User(firstName=firstName, lastName=lastName, password=password, email=email)
+            session.add(user)
+            session.commit()
+            return redirect(url_for('home'))
     else:    
         return render_template('register.html')
 
