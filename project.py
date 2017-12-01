@@ -54,6 +54,10 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        if not (request.form['firstName'] and request.form['lastName'] and request.form['lastName'] and request.form['password'] and request.form['confirmPassword']):
+            error = "please fill in all fields"
+            return render_template('register.html', error=error)
+
         firstName = request.form['firstName']
         lastName = request.form['lastName']
         email = request.form['email']
