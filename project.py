@@ -3,6 +3,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy import create_engine, asc, and_, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing, User
@@ -30,6 +31,14 @@ session = DBSession()
 
 errors = {"1":"Error: Duplicate"}
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return session.query(User).filter_by(id=user_id).first()
+    #return User.query.get(int(user_id))
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
@@ -43,6 +52,7 @@ def login():
             user = session.query(User).filter_by(email=email, password=password).first()
 
             if user:
+                login_user(user)
                 return redirect(url_for('home'))
             else:
                 error = "Wrong email or password"
@@ -50,6 +60,16 @@ def login():
 
     else:
         return render_template('login.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+@login_required
+def logout():
+    if request.method == 'POST':
+        logout_user()
+        return redirect(url_for('login'))
+
+    else:
+        return render_template('logout.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -72,16 +92,19 @@ def register():
             user = User(firstName=firstName, lastName=lastName, password=password, email=email)
             session.add(user)
             session.commit()
+            login_user(user)
             return redirect(url_for('home'))
     else:    
         return render_template('register.html')
 
 @app.route('/home')
+@login_required
 def home():
     promotionals = session.query(Promotional).order_by(asc(Promotional.date))
-    return render_template('home.html', title="Shinkyu Shotokan Promotional Builder", promotionals=promotionals)
+    return render_template('home.html', title="Shinkyu Shotokan Promotional Builder - user:" + current_user.email, promotionals=promotionals)
 
 @app.route('/addPromotional', methods=['GET', 'POST'])
+@login_required
 def addPromotional():
     if request.method == 'POST':
         newPromotional = Promotional(
@@ -92,6 +115,7 @@ def addPromotional():
         return redirect(url_for('home'))
 
 @app.route('/<int:promotional_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
@@ -112,6 +136,7 @@ def editPromotional(promotional_id):
         return render_template('editpromotional.html', promotional=promotional)
 
 @app.route('/<int:promotional_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deletePromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).all()
@@ -130,6 +155,7 @@ def deletePromotional(promotional_id):
         return render_template('deletepromotional.html', promotional_id=promotional_id)
 
 @app.route('/<int:promotional_id>', methods=['GET', 'POST'])
+@login_required
 def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.lastName).all()
@@ -137,6 +163,7 @@ def showPromotional(promotional_id):
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
 
 @app.route('/<int:promotional_id>/<string:color>', methods=['GET', 'POST'])
+@login_required
 def showPromotionalColor(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
@@ -190,6 +217,7 @@ def showPromotionalColor(promotional_id, color):
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, pairings=pairings, error=error)
 
 @app.route('/<int:promotional_id>/orderBelts', methods=['GET', 'POST'])
+@login_required
 def orderBelts(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).filter(Application.rank.in_(['10thkyu', '9thkyu', '7thkyu', '5thkyu', '3rdkyu', '1stdan'])).all()
@@ -216,6 +244,7 @@ def orderBelts(promotional_id):
     return render_template('orderBelts.html', title=title, promotional_id=promotional_id, sizes=sizes, orderedSizes=orderedSizes, orderedColors=orderedColors)
 
 @app.route('/<int:promotional_id>/<string:color>/certificates', methods=['GET', 'POST'])
+@login_required
 def generateCertificates(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
@@ -269,6 +298,7 @@ def generateCertificates(promotional_id, color):
     #return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color)
 
 @app.route('/<int:promotional_id>/<string:color>/judgesPackets', methods=['GET', 'POST'])
+@login_required
 def generateJudgesPackets(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     #yellow = session.query(Application).filter_by(promotional_id=promotional_id, color="yellow").order_by(Application.lastName).all()
@@ -355,6 +385,7 @@ def generateJudgesPackets(promotional_id, color):
     #return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color)
 
 @app.route('/<int:promotional_id>/<string:color>/pairings', methods=['GET', 'POST'])
+@login_required
 def showPairings(promotional_id, color):
     existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
@@ -383,6 +414,7 @@ def showPairings(promotional_id, color):
 
 
 @app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])
+@login_required
 def editPairings(promotional_id, color):
     unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
     existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
@@ -464,6 +496,7 @@ def editPairings(promotional_id, color):
     	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, pairings=pairings)
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
+@login_required
 def addApplication(promotional_id):
     if request.method == 'POST':
         color = rank_to_belt(request.form['rank'])
@@ -481,6 +514,7 @@ def addApplication(promotional_id):
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
 
 @app.route('/<int:promotional_id>/<int:application_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editApplication(promotional_id, application_id):
     editedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
@@ -508,6 +542,7 @@ def editApplication(promotional_id, application_id):
         return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
 
 @app.route('/<int:promotional_id>/<int:application_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteApplication(promotional_id, application_id):
     deletedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
