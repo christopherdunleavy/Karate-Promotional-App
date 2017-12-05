@@ -1,6 +1,6 @@
-# Chris Dunleavy - Online Board Game Store
+# Chris Dunleavy - Karate Promotional Application
 ----
-This project Python with the Flask framework library and SQLAlchemy to run an online board game store. Users may view the store without needing an account, and are able to view a list of publishers, a list of all games, and a list of games filtered by publisher. Users may log in with Facebook or Google, after which they can add new publishers, add new games for those publishers, and edit and delete games and publishers that they've created. The game lists can be sorted by length, player count, price, and name via a dropdown menu. The server will connect to the included database, which has already been pupotaled with three publishers, each with five games.
+This project Python with the Flask framework library and SQLAlchemy to organize karate promotionals for Shinkyu Shotokan Karate. Instructors can login, create promotionals, add applications, and generate Judge's Packets, Certificates, and Student Paring sheets. This will cut preparation time for a promotional down from five days to one afternoon.
 
 ----
 ## Getting Started
