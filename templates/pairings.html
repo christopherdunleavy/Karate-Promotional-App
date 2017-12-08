@@ -21,20 +21,6 @@
             	{% else %} SUB {% endif %}</td>
           </tr>
           {% endfor %} {% endif %}
-          <!--</tr>
-				{% if pairings %}
-				{% for pairing in pairings %}
-				<tr>
-					<th>{{pairing.sideA|safe}}</th>
-					{% if pairing.sideB != None %}
-					<th>{{pairing.sideB|safe}}</th>
-					{% else %}
-					<th>None</th>
-					{% endif %}
-				</tr>
-				{% endfor %}
-				{% endif %}-->
-
         </table>
         <a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit Pairings</a>
         <a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back</a>

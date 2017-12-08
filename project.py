@@ -475,7 +475,7 @@ def editPairings(promotional_id, color):
         return redirect(url_for('showPairings', promotional_id=promotional_id, color=color))
 
     else:
-    	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, pairings=pairings)
+    	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
 @login_required
