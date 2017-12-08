@@ -1,33 +1,44 @@
 {% extends "main.html" %}
-{% block content %}
+{% block content %} 
 {% include "appheader.html" %}
 
-<div class="container">
-	<div class="row py-5">
-		<a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit pairings for {{color}}</a>
-		<a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back to {{color}}</a>
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>Side A</th>
-					<th>Side B</th>
-				</tr>
-			</thead>
-			<tbody>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      {% if error %}
+      <h1>{{error}}</h1>
+      {% endif %}
+      <table class="table table-hover">
+          <tr>
+            <th>Student</th>
+            <th>Partner</th>
+          </tr>
+          {% if applications %} {% for application in applications %}
+          <tr>
+            <td>{{ application.fullName }} - {{ application.rank }}</td>
+            <td>{% if application.sideA %} {{ application.sideA }}
+            	{% elif application.sideB %} {{ application.sideB }}
+            	{% else %} SUB {% endif %}</td>
+          </tr>
+          {% endfor %} {% endif %}
+          <!--</tr>
 				{% if pairings %}
 				{% for pairing in pairings %}
 				<tr>
-					<td>{{pairing.sideA.fullName}} - {{pairing.sideA.rank}}</td>
+					<th>{{pairing.sideA|safe}}</th>
 					{% if pairing.sideB != None %}
-					<td>{{pairing.sideB.fullName}} - {{pairing.sideB.rank}}</td>
+					<th>{{pairing.sideB|safe}}</th>
 					{% else %}
-					<td>None</td>
+					<th>None</th>
 					{% endif %}
 				</tr>
 				{% endfor %}
-				{% endif %}
-			</tbody>
-		</table>
-	</div>
+				{% endif %}-->
+
+        </table>
+        <a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit Pairings</a>
+        <a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back</a>
+    </div>
+  </div>
 </div>
 {% endblock %}

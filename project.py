@@ -384,33 +384,15 @@ def generateJudgesPackets(promotional_id, color):
     return response
     #return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color)
 
-@app.route('/<int:promotional_id>/<string:color>/pairings', methods=['GET', 'POST'])
+@app.route('/<int:promotional_id>/<string:color>/pairings')
 @login_required
 def showPairings(promotional_id, color):
-    existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
-    unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
+    
     title="test pairings"
 
-    pairings = []
-    for pairing in existingPairings:
-        sideA = pairing.application_A
-        sideB = pairing.application_B
-
-        if sideB == None and len(unmatchedApplications) > 0:
-            sideB = unmatchedApplications.pop(0)
-
-        tup = {"sideA":sideA,"sideB":sideB}
-        pairings.append(tup)
-
-    if len(unmatchedApplications) > 0:
-        i = 0
-        name = len(existingPairings)
-        while i < len(unmatchedApplications):
-            tup = {"sideA":unmatchedApplications[i],"sideB":unmatchedApplications[i+1] if i+1 < len(unmatchedApplications) else None}
-            i += 2
-            name += 1
-            pairings.append(tup)
-    return render_template('pairings.html', title=title, promotional_id=promotional_id, color=color, pairings=pairings)
+   
+    return render_template('pairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
 
 
 @app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])

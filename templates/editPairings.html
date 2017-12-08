@@ -1,18 +1,35 @@
+
+
 {% extends "main.html" %}
-{% block content %}
+{% block content %} 
 {% include "appheader.html" %}
 
-<div class="container">
-	<div class="row py-5">
-		{% if error %}
-		<h1>{{error}}</h1>
-		{% endif %}
-		<form method="post" action="{{url_for('editPairings', promotional_id=promotional_id, color=color)}}">
-			<table class="table table-hover">
-				<tr>
-					<th>Side A</th>
-					<th>Side B</th>
-				</tr>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      {% if error %}
+      <h1>{{error}}</h1>
+      {% endif %}
+      <form method="post" action="{{url_for('editPairings', promotional_id=promotional_id, color=color)}}">
+        <table class="table table-hover">
+          <tr>
+            <th>Student</th>
+            <th>Partner</th>
+          </tr>
+          {% if applications %} {% for application in applications %}
+          <tr>
+            <td>{{ application.fullName }} - {{ application.rank }}</td>
+            <td>
+              <select class="pairingSelect" style="width:100%" name="{{ application.id }}">
+                <option>SUB</option>
+                {% for app in applications %} {% if app != application %}
+                <option value="{{ app.id }}">{{ app.fullName }} - {{ app.rank }}</option>
+                {% endif %} {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% endfor %} {% endif %}
+          <!--</tr>
 				{% if pairings %}
 				{% for pairing in pairings %}
 				<tr>
@@ -24,12 +41,13 @@
 					{% endif %}
 				</tr>
 				{% endfor %}
-				{% endif %}
+				{% endif %}-->
 
-			</table>
-			<button type="submit" class="btn btn-default">Submit</button>
-			<a class="btn btn-outline-primary" href="{{url_for('showPairings',promotional_id=promotional_id, color=color)}}">Cancel</a>
-		</form>
-	</div>
+        </table>
+        <button type="submit" class="btn btn-default">Submit</button>
+        <a class="btn btn-outline-primary" href="{{url_for('showPairings',promotional_id=promotional_id, color=color)}}">Cancel</a>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
