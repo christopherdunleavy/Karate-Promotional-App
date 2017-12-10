@@ -398,81 +398,32 @@ def showPairings(promotional_id, color):
 @app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])
 @login_required
 def editPairings(promotional_id, color):
-    unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
-    existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
     title="test edit pairings"
     error = None
+
     if request.args.get('error') != None:
     	error = errors[request.args.get('error')]
 
-    def makeSelect(selected, name):
-        if selected != None:
-            select = "<select name='%s'>" % name
-            endSelect = "</select>"
-
-            for application in applications:
-                fullNameRank = application.fullName + " - " + application.rank
-                value = application.id
-                if application == selected:
-                    option = "<option value='%s' selected>%s</option>" % (value, fullNameRank)
-                else:
-                    option = "<option value='%s'>%s</option>" % (value, fullNameRank)
-                select = select + option
-
-            select = select + endSelect
-        else:
-            select = None
-        return select
-
-    pairings = []
-    for pairing in existingPairings:
-        sideA = pairing.application_A
-        sideB = pairing.application_B
-
-        if sideB == None and len(unmatchedApplications) > 0:
-            sideB = unmatchedApplications.pop(0)
-
-        tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
-        pairings.append(tup)
-
-    if len(unmatchedApplications) > 0:
-        i = 0
-        name = len(existingPairings)
-        while i < len(unmatchedApplications):
-            tup = {"sideA":makeSelect(unmatchedApplications[i], str(name) + "sideA"),"sideB":makeSelect(unmatchedApplications[i+1], str(name) + "sideB") if i+1 < len(unmatchedApplications) else None}
-            i += 2
-            name += 1
-            pairings.append(tup)
 
     if request.method == 'POST':
-    	for pairing in existingPairings:
-    		session.delete(pairing)
+    	for application in applications:
+            application.sideA_id = None
+            application.sideB_id = None
 
-        existingApplications = []
-        error = "1"
-        i = 0
-        while i < len(request.form)/2:
-            sideA_id=request.form.get(str(i)+"sideA")
-
-            if sideA_id in existingApplications:
-            	return redirect(url_for('editPairings', promotional_id=promotional_id, color=color, error=error))
-
-            existingApplications.append(sideA_id)
-
-            if (str(i)+"sideB") in request.form:
-                sideB_id=request.form.get(str(i)+"sideB")
-                if sideB_id in existingApplications:
-            		return redirect(url_for('editPairings', promotional_id=promotional_id, color=color, error=error))
-            	existingApplications.append(sideB_id)
-            else:
-                sideB_id = None
-            newPairing = Pairing(promotional_id=promotional_id, sideA_id=sideA_id, sideB_id=sideB_id, color=color)
-            session.add(newPairing)
-            i += 1
-
+        for application in applications:
+            print application.firstName
+            if not application.sideB_id:
+                print "no sideB"
+            if not application.sideB_id and request.form[str(application.id)] != "sub":
+                sideB = session.query(Application).filter_by(id=request.form[str(application.id)]).one()
+                print sideB.id
+                application.sideA_id = sideB.id
+                sideB.sideB_id = application.id
+                session.add(sideB)
+            session.add(application)
         session.commit()
-        return redirect(url_for('showPairings', promotional_id=promotional_id, color=color))
+        return redirect(url_for('showPairings', promotional_id=promotional_id, color=color, applications=applications))
 
     else:
     	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)

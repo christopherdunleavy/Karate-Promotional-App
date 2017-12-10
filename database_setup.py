@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, Date
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
@@ -44,6 +44,13 @@ class Application(Base):
     beltSize = Column(String(20), nullable=False)
     promotional_id = Column(Integer, ForeignKey('promotional.id'))
     promotional = relationship("Promotional", back_populates="applications")
+    sideA_id = Column(Integer, ForeignKey('application.id'))
+    sideB_id = Column(Integer, ForeignKey('application.id'))
+    sideA = relationship("Application", foreign_keys=[sideA_id], post_update=True, uselist=False)
+    sideB = relationship("Application", foreign_keys=[sideB_id], post_update=True, uselist=False)
+
+    # sideB_id = Column(Integer, ForeignKey('application.id'))
+    # sideA = relationship('Application', backref=backref('sideB', remote_side=[id]))
 
     @hybrid_property
     def fullName(self):
