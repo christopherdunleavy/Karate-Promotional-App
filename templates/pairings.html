@@ -16,9 +16,7 @@
           {% if applications %} {% for application in applications %}
           <tr>
             <td>{{ application.fullName }} - {{ application.rank }}</td>
-            <td>{% if application.sideA %} {{ application.sideA.fullName }} - {{ application.sideA.rank}}
-            	{% elif application.sideB %} {{ application.sideB.fullName }} - {{ application.sideB.rank}}
-            	{% else %} SUB {% endif %}</td>
+            <td>{{ application.partnerInfo() }}</td>
           </tr>
           {% endfor %} {% endif %}
         </table>

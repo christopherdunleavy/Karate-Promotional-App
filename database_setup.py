@@ -23,6 +23,7 @@ class Promotional(Base):
     date = Column(Date, nullable=False)
     type = Column(String(20), nullable=False)
     applications = relationship("Application", back_populates="promotional")
+
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
@@ -49,6 +50,19 @@ class Application(Base):
     sideA = relationship("Application", foreign_keys=[sideA_id], post_update=True, uselist=False)
     sideB = relationship("Application", foreign_keys=[sideB_id], post_update=True, uselist=False)
 
+    def partner(self):
+        if self.sideA:
+            return self.sideA
+        return self.sideB
+    
+    def partnerInfo(self):
+        if self.sideA:
+            return self.sideA.fullName + " - " + self.sideA.rank
+        elif self.sideB:
+            return self.sideB.fullName + " - " + self.sideB.rank
+        else:
+            return "SUB"
+    
     # sideB_id = Column(Integer, ForeignKey('application.id'))
     # sideA = relationship('Application', backref=backref('sideB', remote_side=[id]))
 
