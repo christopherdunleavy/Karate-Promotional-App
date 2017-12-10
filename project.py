@@ -158,7 +158,7 @@ def deletePromotional(promotional_id):
 @login_required
 def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.lastName).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
 
@@ -166,55 +166,58 @@ def showPromotional(promotional_id):
 @login_required
 def showPromotionalColor(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
-    unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
-    existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
+    if color == "black":
+        applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank, Application.birthDate.desc()).all()
+    else:
+        applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank.desc(), Application.birthDate.desc()).all()
+    # unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
+    # existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     error = None
     if request.args.get('error') != None:
     		error = errors[request.args.get('error')]
 
-    def makeSelect(selected, name):
-        if selected != None:
-            select = "<select name='%s'>" % name
-            endSelect = "</select>"
+    # def makeSelect(selected, name):
+    #     if selected != None:
+    #         select = "<select name='%s'>" % name
+    #         endSelect = "</select>"
 
-            for application in applications:
-                fullName = application.fullName
-                value = application.id
-                if application == selected:
-                    option = "<option value='%s' selected>%s</option>" % (value, fullName)
-                else:
-                    option = "<option value='%s'>%s</option>" % (value, fullName)
-                select = select + option
+    #         for application in applications:
+    #             fullName = application.fullName
+    #             value = application.id
+    #             if application == selected:
+    #                 option = "<option value='%s' selected>%s</option>" % (value, fullName)
+    #             else:
+    #                 option = "<option value='%s'>%s</option>" % (value, fullName)
+    #             select = select + option
 
-            select = select + endSelect
-        else:
-            select = None
-        return select
+    #         select = select + endSelect
+    #     else:
+    #         select = None
+    #     return select
 
-    pairings = []
-    for pairing in existingPairings:
-        sideA = pairing.application_A
-        sideB = pairing.application_B
+    # pairings = []
+    # for pairing in existingPairings:
+    #     sideA = pairing.application_A
+    #     sideB = pairing.application_B
 
-        if sideB == None and len(unmatchedApplications) > 0:
-            sideB = unmatchedApplications.pop(0)
+    #     if sideB == None and len(unmatchedApplications) > 0:
+    #         sideB = unmatchedApplications.pop(0)
 
-        tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
-        pairings.append(tup)
+    #     tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
+    #     pairings.append(tup)
 
-    if len(unmatchedApplications) > 0:
-        i = 0
-        name = len(existingPairings)
-        while i < len(unmatchedApplications):
-            tup = {"sideA":makeSelect(unmatchedApplications[i], str(name) + "sideA"),"sideB":makeSelect(unmatchedApplications[i+1], str(name) + "sideB") if i+1 < len(unmatchedApplications) else None}
-            i += 2
-            name += 1
-            pairings.append(tup)
+    # if len(unmatchedApplications) > 0:
+    #     i = 0
+    #     name = len(existingPairings)
+    #     while i < len(unmatchedApplications):
+    #         tup = {"sideA":makeSelect(unmatchedApplications[i], str(name) + "sideA"),"sideB":makeSelect(unmatchedApplications[i+1], str(name) + "sideB") if i+1 < len(unmatchedApplications) else None}
+    #         i += 2
+    #         name += 1
+    #         pairings.append(tup)
 
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, pairings=pairings, error=error)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error)
 
 @app.route('/<int:promotional_id>/orderBelts', methods=['GET', 'POST'])
 @login_required
