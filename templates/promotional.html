@@ -32,6 +32,7 @@
 						<th>Last Name</th>
 						<th>First Name</th>
 						<th>Birth Date</th>
+						<th>Age</th>
 						<th>Rank</th>
 						<th>Belt Size</th>
 					</tr>
@@ -44,6 +45,7 @@
 						<td>{% if application.birthDate != None %}
 							{{application.birthDate.strftime("%m/%d/%Y")}}
 							{% endif %}</td>
+						<td>{{application.age}}</td>
 						<td>{{application.rank}}</td>
 						<td>{{application.beltSize}}</td>
 						<td><a href="#" onclick="openEditApplicationModal({{application.id}},{{promotional_id}})">Edit</a></td>

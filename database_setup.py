@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
+from datetime import date
 
 Base = declarative_base()
 
@@ -69,6 +70,11 @@ class Application(Base):
     @hybrid_property
     def fullName(self):
         return self.firstName + " " + self.lastName
+
+    @hybrid_property
+    def age(self):
+        today = date.today()
+        return today.year - self.birthDate.year - ((today.month, today.day) < (self.birthDate.month, self.birthDate.day))
 
     @property
     def serialize(self):
