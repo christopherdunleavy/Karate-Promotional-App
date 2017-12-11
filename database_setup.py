@@ -41,7 +41,7 @@ class Application(Base):
     firstName = Column(String(80), nullable=False)
     lastName = Column(String(80), nullable=False)
     birthDate = Column(Date, nullable=True)
-    rank = Column(String(20), nullable=False)
+    rank = Column(Integer, nullable=False)
     color = Column(String(20), nullable=False)
     beltSize = Column(String(20), nullable=False)
     promotional_id = Column(Integer, ForeignKey('promotional.id'))
@@ -75,6 +75,14 @@ class Application(Base):
     def age(self):
         today = date.today()
         return today.year - self.birthDate.year - ((today.month, today.day) < (self.birthDate.month, self.birthDate.day))
+
+    rankDict = ["10th kyu","9th kyu","8th kyu","7th kyu","6th kyu","5th kyu","4th kyu","3rd kyu","2nd kyu",
+        "1st kyu","1st dan","2nd dan","3rd dan","4th dan","5th dan","6th dan","7th dan","8th dan","9th dan","10th dan"]
+
+    @hybrid_property
+    def rankInfo(self):
+        return self.rankDict[self.rank]
+
 
     @property
     def serialize(self):

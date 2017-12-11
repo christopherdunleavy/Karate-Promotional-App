@@ -46,7 +46,7 @@
 							{{application.birthDate.strftime("%m/%d/%Y")}}
 							{% endif %}</td>
 						<td>{{application.age}}</td>
-						<td>{{application.rank}}</td>
+						<td>{{application.rankInfo}}</td>
 						<td>{{application.beltSize}}</td>
 						<td><a href="#" onclick="openEditApplicationModal({{application.id}},{{promotional_id}})">Edit</a></td>
 						<td><a href="#" onclick="openDeleteApplicationModal({{application.id}},{{promotional_id}})">Delete</a></td>
@@ -93,26 +93,26 @@
 							<div class="form-group">
 								<label>Rank </label>&nbsp;
 								<select name="rank" class="form-control">
-									<option value="10thkyu">10th Kyu</option>
-									<option value="9thkyu">9th Kyu</option>
-									<option value="8thkyu">8th Kyu</option>
-									<option value="7thkyu">7th Kyu</option>
-									<option value="6thkyu">6th Kyu</option>
-									<option value="5thkyu">5th Kyu</option>
-									<option value="4thkyu">4th Kyu</option>
-									<option value="3rdkyu">3rd Kyu</option>
-									<option value="2ndkyu">2nd Kyu</option>
-									<option value="1stkyu">1st Kyu</option>
-									<option value="1stdan">1st Dan</option>
-									<option value="2nddan">2nd Dan</option>
-									<option value="3rddan">3rd Dan</option>
-									<option value="4thdan">4th Dan</option>
-									<option value="5thdan">5th Dan</option>
-									<option value="6thdan">6th Dan</option>
-									<option value="7thdan">7th Dan</option>
-									<option value="8thdan">8th Dan</option>
-									<option value="9thdan">9th Dan</option>
-									<option value="10thdan">10th Dan</option>
+									<option value="0">10th Kyu</option>
+									<option value="1">9th Kyu</option>
+									<option value="2">8th Kyu</option>
+									<option value="3">7th Kyu</option>
+									<option value="4">6th Kyu</option>
+									<option value="5">5th Kyu</option>
+									<option value="6">4th Kyu</option>
+									<option value="7">3rd Kyu</option>
+									<option value="8">2nd Kyu</option>
+									<option value="9">1st Kyu</option>
+									<option value="10">1st Dan</option>
+									<option value="11">2nd Dan</option>
+									<option value="12">3rd Dan</option>
+									<option value="13">4th Dan</option>
+									<option value="14">5th Dan</option>
+									<option value="15">6th Dan</option>
+									<option value="16">7th Dan</option>
+									<option value="17">8th Dan</option>
+									<option value="18">9th Dan</option>
+									<option value="19">10th Dan</option>
 								</select>
 							</div>
 							<div class="form-group">

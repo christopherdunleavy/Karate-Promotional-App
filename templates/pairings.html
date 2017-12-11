@@ -15,7 +15,7 @@
           </tr>
           {% if applications %} {% for application in applications %}
           <tr>
-            <td>{{ application.fullName }} - {{ application.rank }}</td>
+            <td>{{ application.fullName }} - {{ application.rankInfo }}</td>
             <td>{{ application.partnerInfo() }}</td>
           </tr>
           {% endfor %} {% endif %}

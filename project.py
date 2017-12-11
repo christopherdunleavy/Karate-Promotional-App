@@ -166,10 +166,7 @@ def showPromotional(promotional_id):
 @login_required
 def showPromotionalColor(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    if color == "black":
-        applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank, Application.birthDate.desc()).all()
-    else:
-        applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank.desc(), Application.birthDate.desc()).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank, Application.birthDate.desc()).all()
     # unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
     # existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
@@ -435,14 +432,14 @@ def editPairings(promotional_id, color):
 @login_required
 def addApplication(promotional_id):
     if request.method == 'POST':
-        color = rank_to_belt(request.form['rank'])
+        color = rank_to_belt(int(request.form['rank']))
         birthDate=request.form['birthDate']
         if birthDate != '':
         	birthDate = datetime.strptime(request.form['birthDate'], '%Y-%m-%d')
         else:
         	birthDate = None
         newApplication = Application(
-            firstName=request.form['firstName'], lastName=request.form['lastName'], birthDate=birthDate, rank=request.form['rank'],
+            firstName=request.form['firstName'], lastName=request.form['lastName'], birthDate=birthDate, rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id)
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
@@ -465,8 +462,8 @@ def editApplication(promotional_id, application_id):
         else:
         	editedApplication.birthDate = None
         if request.form['rank']:
-        	editedApplication.rank = request.form['rank']
-        	editedApplication.color = rank_to_belt(request.form['rank'])
+        	editedApplication.rank = int(request.form['rank'])
+        	editedApplication.color = rank_to_belt(int(request.form['rank']))
         if request.form['beltSize']:
         	editedApplication.beltSize = request.form['beltSize']
 
@@ -494,30 +491,10 @@ def deleteApplication(promotional_id, application_id):
     else:
         return render_template('deleteapplication.html', promotional_id=promotional_id, application_id=application_id, application=deletedApplication)
 
-def rank_to_belt(argument):
-    switcher = {
-        "10thkyu": "yellow",
-        "9thkyu": "blue",
-        "8thkyu": "blue",
-        "7thkyu": "green",
-        "6thkyu": "green",
-        "5thkyu": "purple",
-        "4thkyu": "purple",
-        "3rdkyu": "brown",
-        "2ndkyu": "brown",
-        "1stkyu": "brown",
-        "1stdan": "black",
-        "2nddan": "black",
-        "3rddan": "black",
-        "4thdan": "black",
-        "5thdan": "black",
-        "6thdan": "black",
-        "7thdan": "black",
-        "8thdan": "black",
-        "9thdan": "black",
-        "10thdan": "black"
-    }
-    return switcher.get(argument, "nothing")
+def rank_to_belt(rank):
+    colors = ["yellow","blue","blue","green","green","purple","purple","brown","brown","brown","black",
+        "black","black","black","black","black","black","black","black","black"]
+    return colors[rank]
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
