@@ -443,6 +443,13 @@ def addApplication(promotional_id):
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id)
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        number = 0
+        for application in applications:
+            application.number = number
+            session.add(application)
+            number += 1
+
         session.commit()
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
 
@@ -468,6 +475,13 @@ def editApplication(promotional_id, application_id):
         	editedApplication.beltSize = request.form['beltSize']
 
         session.add(editedApplication)
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        number = 0
+        for application in applications:
+            application.number = number
+            session.add(application)
+            number += 1
+            
         session.commit()
         flash('Application Successfully Edited')
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
@@ -485,6 +499,12 @@ def deleteApplication(promotional_id, application_id):
             pairing = session.query(Pairing).filter(or_(Pairing.application_A == deletedApplication, Pairing.application_B == deletedApplication)).one()
             session.delete(pairing)
         session.delete(deletedApplication)
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        number = 0
+        for application in applications:
+            application.number = number
+            session.add(application)
+            number += 1
         session.commit()
         flash('Application Successfully Deleted')
         return redirect(url_for('showPromotional', promotional_id=promotional_id))

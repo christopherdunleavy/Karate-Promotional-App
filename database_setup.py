@@ -42,6 +42,7 @@ class Application(Base):
     lastName = Column(String(80), nullable=False)
     birthDate = Column(Date, nullable=True)
     rank = Column(Integer, nullable=False)
+    number = Column(Integer)
     color = Column(String(20), nullable=False)
     beltSize = Column(String(20), nullable=False)
     promotional_id = Column(Integer, ForeignKey('promotional.id'))

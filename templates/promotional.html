@@ -29,6 +29,7 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
+						<th>Number</th>
 						<th>Last Name</th>
 						<th>First Name</th>
 						<th>Birth Date</th>
@@ -40,6 +41,7 @@
 				<tbody>
 					{% for application in applications %}
 					<tr>
+						<td>{{application.number}}</td>
 						<td>{{application.lastName}}</td>
 						<td>{{application.firstName}}</td>
 						<td>{% if application.birthDate != None %}
