@@ -302,7 +302,7 @@ def generateCertificates(promotional_id, color):
 def generateJudgesPackets(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     #yellow = session.query(Application).filter_by(promotional_id=promotional_id, color="yellow").order_by(Application.lastName).all()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).order_by(Application.rank).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     output = PdfFileWriter()
@@ -315,7 +315,8 @@ def generateJudgesPackets(promotional_id, color):
     previousRank = applications[0].rank
 
     for application in applications:
-        name = application.firstName + " " + application.lastName
+        name = str(application.number) + ". " + application.fullName
+        print "fullname: " + application.fullName
 
         if counter == 4 or previousRank != application.rank:
             counter = 0
@@ -335,20 +336,20 @@ def generateJudgesPackets(promotional_id, color):
 
         if counter == 0:
             c.setFont('Helvetica', 24)
-            c.drawCentredString(300, 700, application.rank + " " + color.title() + " Belt")
-            c.setFont('Helvetica', 12)
+            c.drawCentredString(300, 700, application.rankInfo + " " + color.title() + " Belt")
+            c.setFont('Helvetica', 14)
             c.drawCentredString(450, 566, name)
             counter += 1
         elif counter == 1:
-            c.setFont('Helvetica', 12)
+            c.setFont('Helvetica', 14)
             c.drawCentredString(450, 417, name)
             counter += 1
         elif counter == 2:
-            c.setFont('Helvetica', 12)
+            c.setFont('Helvetica', 14)
             c.drawCentredString(450, 270, name)
             counter += 1
         elif counter == 3:
-            c.setFont('Helvetica', 12)
+            c.setFont('Helvetica', 14)
             c.drawCentredString(450, 115, name)
             counter += 1
 
