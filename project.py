@@ -479,7 +479,7 @@ def editApplication(promotional_id, application_id):
 
         session.add(editedApplication)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
-        number = 0
+        number = 1
         for application in applications:
             application.number = number
             session.add(application)
@@ -503,7 +503,7 @@ def deleteApplication(promotional_id, application_id):
             session.delete(pairing)
         session.delete(deletedApplication)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
-        number = 0
+        number = 1
         for application in applications:
             application.number = number
             session.add(application)
