@@ -40,6 +40,7 @@ class Application(Base):
     id = Column(Integer, primary_key=True)
     firstName = Column(String(80), nullable=False)
     lastName = Column(String(80), nullable=False)
+    payment = Column(String(80))
     birthDate = Column(Date, nullable=True)
     rank = Column(Integer, nullable=False)
     number = Column(Integer)

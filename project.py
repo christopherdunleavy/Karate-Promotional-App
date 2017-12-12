@@ -441,7 +441,7 @@ def addApplication(promotional_id):
         	birthDate = None
         newApplication = Application(
             firstName=request.form['firstName'], lastName=request.form['lastName'], birthDate=birthDate, rank=int(request.form['rank']),
-                 color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id)
+                 color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
@@ -474,6 +474,8 @@ def editApplication(promotional_id, application_id):
         	editedApplication.color = rank_to_belt(int(request.form['rank']))
         if request.form['beltSize']:
         	editedApplication.beltSize = request.form['beltSize']
+        if request.form['payment']:
+            editedApplication.payment = request.form['payment']
 
         session.add(editedApplication)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
