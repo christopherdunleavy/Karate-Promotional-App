@@ -41,7 +41,7 @@ class Application(Base):
     firstName = Column(String(80), nullable=False)
     lastName = Column(String(80), nullable=False)
     payment = Column(String(80))
-    birthDate = Column(Date, nullable=True)
+    age = Column(Integer, nullable=False)
     rank = Column(Integer, nullable=False)
     number = Column(Integer)
     color = Column(String(20), nullable=False)
@@ -60,9 +60,9 @@ class Application(Base):
     
     def partnerInfo(self):
         if self.sideA:
-            return self.sideA.fullName + " - " + self.sideA.rank
+            return self.sideA.fullName + " - " + self.rankDict[self.sideA.rank]
         elif self.sideB:
-            return self.sideB.fullName + " - " + self.sideB.rank
+            return self.sideB.fullName + " - " + self.rankDict[self.sideB.rank]
         else:
             return "SUB"
     
@@ -72,11 +72,6 @@ class Application(Base):
     @hybrid_property
     def fullName(self):
         return self.firstName + " " + self.lastName
-
-    @hybrid_property
-    def age(self):
-        today = date.today()
-        return today.year - self.birthDate.year - ((today.month, today.day) < (self.birthDate.month, self.birthDate.day))
 
     rankDict = ["10th kyu","9th kyu","8th kyu","7th kyu","6th kyu","5th kyu","4th kyu","3rd kyu","2nd kyu",
         "1st kyu","1st dan","2nd dan","3rd dan","4th dan","5th dan","6th dan","7th dan","8th dan","9th dan","10th dan"]

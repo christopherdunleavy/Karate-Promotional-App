@@ -158,7 +158,7 @@ def deletePromotional(promotional_id):
 @login_required
 def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
 
@@ -166,7 +166,7 @@ def showPromotional(promotional_id):
 @login_required
 def showPromotionalColor(promotional_id, color):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.rank, Application.birthDate.desc()).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     # unmatchedApplications = session.query(Application).filter_by(promotional_id=promotional_id, color=color, pairingA=None, pairingB=None).order_by(Application.lastName).all()
     # existingPairings = session.query(Pairing).filter_by(promotional_id=promotional_id, color=color).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
@@ -174,45 +174,6 @@ def showPromotionalColor(promotional_id, color):
     error = None
     if request.args.get('error') != None:
     		error = errors[request.args.get('error')]
-
-    # def makeSelect(selected, name):
-    #     if selected != None:
-    #         select = "<select name='%s'>" % name
-    #         endSelect = "</select>"
-
-    #         for application in applications:
-    #             fullName = application.fullName
-    #             value = application.id
-    #             if application == selected:
-    #                 option = "<option value='%s' selected>%s</option>" % (value, fullName)
-    #             else:
-    #                 option = "<option value='%s'>%s</option>" % (value, fullName)
-    #             select = select + option
-
-    #         select = select + endSelect
-    #     else:
-    #         select = None
-    #     return select
-
-    # pairings = []
-    # for pairing in existingPairings:
-    #     sideA = pairing.application_A
-    #     sideB = pairing.application_B
-
-    #     if sideB == None and len(unmatchedApplications) > 0:
-    #         sideB = unmatchedApplications.pop(0)
-
-    #     tup = {"sideA":makeSelect(sideA, str(existingPairings.index(pairing)) + "sideA"),"sideB":makeSelect(sideB, str(existingPairings.index(pairing)) + "sideB")}
-    #     pairings.append(tup)
-
-    # if len(unmatchedApplications) > 0:
-    #     i = 0
-    #     name = len(existingPairings)
-    #     while i < len(unmatchedApplications):
-    #         tup = {"sideA":makeSelect(unmatchedApplications[i], str(name) + "sideA"),"sideB":makeSelect(unmatchedApplications[i+1], str(name) + "sideB") if i+1 < len(unmatchedApplications) else None}
-    #         i += 2
-    #         name += 1
-    #         pairings.append(tup)
 
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error)
 
@@ -252,27 +213,33 @@ def generateCertificates(promotional_id, color):
 
     output = PdfFileWriter()
 
-    date = promotional.date.strftime("%B %d, %Y")
+    date = promotional.date.strftime("%-m/%-d/%Y")
+
 
     for application in applications:
         name = application.firstName + " " + application.lastName
+        sensei = "Sue Miller, Sensei"
+        if application.age > 12:
+            sensei = "Nobu Kaji, Sensei"
+
         certificate = PdfFileReader(open("promotionalCertificate.pdf", "rb"))
         certificatePage = certificate.getPage(0)
 
         infoBuffer = StringIO.StringIO()
 
-        def hello(c):
+        def drawCertificate(c):
             c.setFont('Helvetica', 24)
             c.drawCentredString(305,452, name)
-            c.setFont('Helvetica', 36)
-            c.drawCentredString(305,372, application.rank)
-            c.setFont('Helvetica', 15)
+            c.setFont('Helvetica', 28)
+            c.drawCentredString(305,372, (application.rankInfo + " " + application.color.capitalize() + " Belt"))
+            c.setFont('Helvetica', 14)
             c.drawString(180,330, date)
-            c.drawCentredString(200,285,"Sensei Sue, Sensei Nobu")
+            c.drawCentredString(194,286, sensei)
+            c.drawString(383,255, "10th Dan")
 
         c = canvas.Canvas(infoBuffer)
 
-        hello(c)
+        drawCertificate(c)
         c.showPage()
         c.save()
 
@@ -434,17 +401,12 @@ def editPairings(promotional_id, color):
 def addApplication(promotional_id):
     if request.method == 'POST':
         color = rank_to_belt(int(request.form['rank']))
-        birthDate=request.form['birthDate']
-        if birthDate != '':
-        	birthDate = datetime.strptime(request.form['birthDate'], '%Y-%m-%d')
-        else:
-        	birthDate = None
         newApplication = Application(
-            firstName=request.form['firstName'], lastName=request.form['lastName'], birthDate=birthDate, rank=int(request.form['rank']),
+            firstName=request.form['firstName'], lastName=request.form['lastName'], age=request.form["age"], rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
-        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
         number = 0
         for application in applications:
             application.number = number
@@ -465,10 +427,8 @@ def editApplication(promotional_id, application_id):
             editedApplication.firstName = request.form['firstName']
         if request.form['lastName']:
             editedApplication.lastName = request.form['lastName']
-        if request.form['birthDate']:
-            editedApplication.birthDate = datetime.strptime(request.form['birthDate'], '%Y-%m-%d')
-        else:
-        	editedApplication.birthDate = None
+        if request.form['age']:
+            editedApplication.age = request.form["age"]
         if request.form['rank']:
         	editedApplication.rank = int(request.form['rank'])
         	editedApplication.color = rank_to_belt(int(request.form['rank']))
@@ -478,7 +438,7 @@ def editApplication(promotional_id, application_id):
             editedApplication.payment = request.form['payment']
 
         session.add(editedApplication)
-        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
         number = 1
         for application in applications:
             application.number = number
