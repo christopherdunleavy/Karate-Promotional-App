@@ -30,8 +30,7 @@
 				<thead>
 					<tr>
 						<th>Number</th>
-						<th>Last Name</th>
-						<th>First Name</th>
+						<th>Name</th>
 						<th>Age</th>
 						<th>Rank</th>
 						<th>Belt Size</th>
@@ -42,8 +41,7 @@
 					{% for application in applications %}
 					<tr>
 						<td>{{application.number}}</td>
-						<td>{{application.lastName}}</td>
-						<td>{{application.firstName}}</td>
+						<td>{{application.fullName}}</td>
 						<td>{{application.age}}</td>
 						<td>{{application.rankInfo}}</td>
 						<td>{{application.beltSize}}</td>

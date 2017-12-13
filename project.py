@@ -181,7 +181,7 @@ def showPromotionalColor(promotional_id, color):
 @login_required
 def orderBelts(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
-    applications = session.query(Application).filter_by(promotional_id=promotional_id).filter(Application.rank.in_(['10thkyu', '9thkyu', '7thkyu', '5thkyu', '3rdkyu', '1stdan'])).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id).filter(Application.rank.in_([0, 1, 3, 5, 7, 10])).all()
     title = "Belts for " + promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
 
     orderedSizes = ['----','0000','000','00','0','1','2','3','4','5','6','7','8']
