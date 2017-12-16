@@ -7,32 +7,29 @@
             <a class="btn btn-outline-primary" href="{{url_for('showPromotional',promotional_id=promotional_id)}}">Back</a>
         </div>
     </div>
-	{% for color in orderedColors %}
-        {% if sizes[color] != {} %}
         <div class="row">
             <div class="col-md-12">
                 <table class="table">
                     <thead>
-                        <tr>    
-                            <th>Sizes for {{color.capitalize()}}</th>
-                            <th>Number of Belts</th>
+                        <tr>
+                            <th>Belts</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for color in orderedColors %}
+                        {% if sizes[color] != {} %}
                         {% for size in orderedSizes %}
                         {% if size in sizes[color].keys() %}
                         <tr>
-                            <td>{{size}}</td>
-                            <td>{{sizes[color][size]}}</td>   
+                            <td>{{ color.capitalize() }} Size {{ size }}</td>
+                            <td>{{ sizes[color][size] }}</td>
                         </tr>
-                        {% endif %}
-                        {% endfor %}
+                        {% endif %} {% endfor %} {% endif %} {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-        {% endif %}
-    {% endfor %}
 </div>
 {% endblock %}
 

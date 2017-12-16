@@ -61,7 +61,7 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     if request.method == 'POST':
@@ -355,7 +355,7 @@ def generateJudgesPackets(promotional_id, color):
 @app.route('/<int:promotional_id>/<string:color>/pairings')
 @login_required
 def showPairings(promotional_id, color):
-    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     
     title="test pairings"
 
@@ -366,7 +366,7 @@ def showPairings(promotional_id, color):
 @app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])
 @login_required
 def editPairings(promotional_id, color):
-    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.lastName).all()
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     title="test edit pairings"
     error = None
 
@@ -407,7 +407,7 @@ def addApplication(promotional_id):
         session.add(newApplication)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
-        number = 0
+        number = 1
         for application in applications:
             application.number = number
             session.add(application)
