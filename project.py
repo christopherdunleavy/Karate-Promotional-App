@@ -273,17 +273,67 @@ def generateJudgesPackets(promotional_id, color):
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
 
     output = PdfFileWriter()
-    infoBuffer = StringIO.StringIO()
-    c = canvas.Canvas(infoBuffer)
-    date = promotional.date.strftime("%B %d, %Y")
-    judgesPacket = PdfFileReader(open("RankingSheet.pdf", "rb"))
-    judgesPacketPage = judgesPacket.getPage(0)
+    
     counter = 0
     previousRank = applications[0].rank
 
+    def generateCoverPage(rank):
+        infoBuffer = StringIO.StringIO()
+        c = canvas.Canvas(infoBuffer)
+        date = promotional.date.strftime("%B %d, %Y")
+        cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+        coverPage = cover.getPage(0)
+
+        offset = 38
+        coverCounter = 0
+        for app in applications:
+            if app.rank == rank:
+                if coverCounter == 0:
+                    c.setFont('Helvetica', 24)
+                    #Page title
+                    c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt")
+                    #table header
+                    c.setFont('Helvetica-Bold', 18)
+                    c.drawString(80, 624, app.rankInfo + " " + color.title() + " Belt")
+
+                c.setFont('Helvetica', 24)
+                c.drawString(80, 590 - coverCounter*offset, app.fullName)
+                #number listing
+                c.drawCentredString(330, 590 - coverCounter*offset, str(app.number))
+                coverCounter += 1
+
+                if coverCounter == 15:
+                    c.showPage()
+                    c.save()
+                    infoBuffer.seek(0)
+                    info = PdfFileReader(infoBuffer)
+                    coverPage.mergePage(info.getPage(0))
+                    output.addPage(coverPage)
+                    infoBuffer.close()
+
+                    infoBuffer = StringIO.StringIO()
+                    c = canvas.Canvas(infoBuffer)
+                    cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+                    coverPage = cover.getPage(0)
+                    coverCounter = 0
+
+        c.showPage()
+        c.save()
+        infoBuffer.seek(0)
+        info = PdfFileReader(infoBuffer)
+        coverPage.mergePage(info.getPage(0))
+        output.addPage(coverPage)
+        infoBuffer.close()
+
+    generateCoverPage(previousRank)
+
+    judgesPacket = PdfFileReader(open("RankingSheet.pdf", "rb"))
+    judgesPacketPage = judgesPacket.getPage(0)
+    infoBuffer = StringIO.StringIO()
+    c = canvas.Canvas(infoBuffer)
+
     for application in applications:
-        name = str(application.number) + ". " + application.fullName
-        print "fullname: " + application.fullName
+        name = str(application.number) + ") " + application.fullName
 
         if counter == 4 or previousRank != application.rank:
             counter = 0
@@ -296,6 +346,11 @@ def generateJudgesPackets(promotional_id, color):
             output.addPage(judgesPacketPage)
             infoBuffer.close()
 
+            if previousRank != application.rank:
+                generateCoverPage(application.rank)
+
+                #create cover page for next rank
+
             infoBuffer = StringIO.StringIO()
             c = canvas.Canvas(infoBuffer)
             judgesPacket = PdfFileReader(open("RankingSheet.pdf", "rb"))
@@ -304,7 +359,7 @@ def generateJudgesPackets(promotional_id, color):
         if counter == 0:
             c.setFont('Helvetica', 24)
             c.drawCentredString(300, 700, application.rankInfo + " " + color.title() + " Belt")
-            c.setFont('Helvetica', 14)
+            c.setFont('Helvetica', 15)
             c.drawCentredString(450, 566, name)
             counter += 1
         elif counter == 1:
@@ -332,11 +387,7 @@ def generateJudgesPackets(promotional_id, color):
             infoBuffer = StringIO.StringIO()
 
         previousRank = application.rank
-        # infoBuffer.seek(0)
-        # info = PdfFileReader("output.pdf")
-        # judgesPacketPage.mergePage(info.getPage(0))
-        # output.addPage(judgesPacketPage)
-        #infoBuffer.close()
+
 
     outputStream = StringIO.StringIO()
     output.write(outputStream)
