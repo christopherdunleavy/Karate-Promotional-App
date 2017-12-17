@@ -284,6 +284,7 @@ def generateJudgesPackets(promotional_id, color):
         cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
         coverPage = cover.getPage(0)
 
+
         offset = 38
         coverCounter = 0
         for app in applications:
@@ -388,7 +389,6 @@ def generateJudgesPackets(promotional_id, color):
 
         previousRank = application.rank
 
-
     outputStream = StringIO.StringIO()
     output.write(outputStream)
 
@@ -410,9 +410,7 @@ def showPairings(promotional_id, color):
     
     title="test pairings"
 
-   
     return render_template('pairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
-
 
 @app.route('/<int:promotional_id>/<string:color>/editPairings', methods=['GET', 'POST'])
 @login_required
@@ -424,7 +422,6 @@ def editPairings(promotional_id, color):
     if request.args.get('error') != None:
     	error = errors[request.args.get('error')]
 
-
     if request.method == 'POST':
     	for application in applications:
             application.sideA_id = None
@@ -432,11 +429,8 @@ def editPairings(promotional_id, color):
 
         for application in applications:
             print application.firstName
-            if not application.sideB_id:
-                print "no sideB"
             if not application.sideB_id and request.form[str(application.id)] != "sub":
                 sideB = session.query(Application).filter_by(id=request.form[str(application.id)]).one()
-                print sideB.id
                 application.sideA_id = sideB.id
                 sideB.sideB_id = application.id
                 session.add(sideB)
@@ -446,6 +440,102 @@ def editPairings(promotional_id, color):
 
     else:
     	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
+
+@app.route('/<int:promotional_id>/<string:color>/generatePairings')
+@login_required
+def generatePairings(promotional_id, color):
+    #query for all applicants of the selected color belonging to the selected
+    #promotional, ordered by number, which is ordered by rank and age
+    applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
+ 
+    #instatiate a PdfFileWriter for output
+    output = PdfFileWriter()
+    
+    #a counter used to count rows in the table and create a new page once
+    #the last row on the page has been reached
+    counter = 0
+
+    rank = applications[0].rank
+
+    #a method used to loop through applications of a given rank and create 
+    #a pdf page
+    def generatePairingsPage(rank):
+        infoBuffer = StringIO.StringIO()
+        c = canvas.Canvas(infoBuffer)
+        cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+        coverPage = cover.getPage(0)
+        
+        offset = 38
+        coverCounter = 0
+        for app in applications:
+            if app.rank == rank:
+                if coverCounter == 0:
+                    c.setFont('Helvetica', 24)
+                    #Page title
+                    c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt Pairings")
+                    #table header
+                    c.setFont('Helvetica-Bold', 18)
+                    c.drawString(80, 624, app.rankInfo + " " + color.title() + " Belt")
+
+                c.setFont('Helvetica', 24)
+                # put "A) " or "B) " depending on whether the application
+                # is on side A or B. Same for the pairing partner.
+                if app.sideA_id:
+                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
+                    sideB = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideA_id).one()
+                    c.drawString(370, 590 - coverCounter*offset, "B) " + sideB.fullName)
+                elif app.sideB_id:
+                    c.drawString(80, 590 - coverCounter*offset, "B) " + app.fullName)
+                    sideA = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideB_id).one()
+                    c.drawString(370, 590 - coverCounter*offset, "A) " + sideA.fullName)
+                else:
+                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
+                    c.drawString(370, 590 - coverCounter*offset, "SUB")
+                
+                #number listing
+                c.drawCentredString(330, 590 - coverCounter*offset, str(app.number))
+                
+                coverCounter += 1
+
+                if coverCounter == 15:
+                    c.showPage()
+                    c.save()
+                    infoBuffer.seek(0)
+                    info = PdfFileReader(infoBuffer)
+                    coverPage.mergePage(info.getPage(0))
+                    output.addPage(coverPage)
+                    infoBuffer.close()
+
+                    infoBuffer = StringIO.StringIO()
+                    c = canvas.Canvas(infoBuffer)
+                    cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+                    coverPage = cover.getPage(0)
+                    coverCounter = 0
+
+        c.showPage()
+        c.save()
+        infoBuffer.seek(0)
+        info = PdfFileReader(infoBuffer)
+        coverPage.mergePage(info.getPage(0))
+        output.addPage(coverPage)
+        infoBuffer.close()
+
+    generatePairingsPage(previousRank)
+    previousRank += 1
+    generatePairingsPage(previousRank)
+
+    outputStream = StringIO.StringIO()
+    output.write(outputStream)
+
+    pdfOut = outputStream.getvalue()
+    outputStream.close()
+
+    fileName = color + " pairings.pdf"
+
+    response = make_response(pdfOut)
+    response.headers['Content-Disposition'] = "attachment; filename=" + fileName
+    response.mimetype = 'application/pdf'
+    return response
 
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
 @login_required

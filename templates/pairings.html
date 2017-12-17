@@ -21,6 +21,7 @@
           {% endfor %} {% endif %}
         </table>
         <a class="btn btn-outline-primary" href="{{url_for('editPairings',promotional_id=promotional_id, color=color)}}">Edit Pairings</a>
+        <a class="btn btn-outline-primary" href="{{url_for('generatePairings',promotional_id=promotional_id, color=color)}}">Generate Pairings PDF</a>
         <a class="btn btn-outline-primary" href="{{url_for('showPromotionalColor',promotional_id=promotional_id, color=color)}}">Back</a>
     </div>
   </div>
