@@ -6,7 +6,7 @@
 	<div class="row py-5">
         <form method="post" action="{{url_for('login')}}">
             {% if error %}
-            <div>{{error}}</div>
+            <div class="alert alert-danger">{{error}}</div>
             {% endif %}
             <div class="form-group">
                 <label>Email </label>&nbsp;<input type="email" class="form-control" name="email" required><br>

@@ -43,6 +43,10 @@ def load_user(user_id):
 def welcome():
     return render_template('welcome.html')
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect('/login')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -173,7 +177,7 @@ def showPromotionalColor(promotional_id, color):
 
     error = None
     if request.args.get('error') != None:
-    		error = errors[request.args.get('error')]
+    	error = errors[request.args.get('error')]
 
     return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error)
 
