@@ -288,7 +288,6 @@ def generateJudgesPackets(promotional_id, color):
         cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
         coverPage = cover.getPage(0)
 
-
         offset = 38
         coverCounter = 0
         for app in applications:
@@ -457,51 +456,22 @@ def generatePairings(promotional_id, color):
     
     #a counter used to count rows in the table and create a new page once
     #the last row on the page has been reached
-    counter = 0
-
-    rank = applications[0].rank
+    # counter = 0
 
     #a method used to loop through applications of a given rank and create 
     #a pdf page
-    def generatePairingsPage(rank):
+    def generatePairingsPage():
         infoBuffer = StringIO.StringIO()
         c = canvas.Canvas(infoBuffer)
-        cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+        cover = PdfFileReader(open("Pairings_packet_template.pdf", "rb"))
         coverPage = cover.getPage(0)
         
+        previousRank = applications[0].rank
         offset = 38
         coverCounter = 0
         for app in applications:
-            if app.rank == rank:
-                if coverCounter == 0:
-                    c.setFont('Helvetica', 24)
-                    #Page title
-                    c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt Pairings")
-                    #table header
-                    c.setFont('Helvetica-Bold', 18)
-                    c.drawString(80, 624, app.rankInfo + " " + color.title() + " Belt")
-
-                c.setFont('Helvetica', 24)
-                # put "A) " or "B) " depending on whether the application
-                # is on side A or B. Same for the pairing partner.
-                if app.sideA_id:
-                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
-                    sideB = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideA_id).one()
-                    c.drawString(370, 590 - coverCounter*offset, "B) " + sideB.fullName)
-                elif app.sideB_id:
-                    c.drawString(80, 590 - coverCounter*offset, "B) " + app.fullName)
-                    sideA = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideB_id).one()
-                    c.drawString(370, 590 - coverCounter*offset, "A) " + sideA.fullName)
-                else:
-                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
-                    c.drawString(370, 590 - coverCounter*offset, "SUB")
-                
-                #number listing
-                c.drawCentredString(330, 590 - coverCounter*offset, str(app.number))
-                
-                coverCounter += 1
-
-                if coverCounter == 15:
+            # if app.rank == rank:
+                if coverCounter == 15 or app.rank != previousRank:
                     c.showPage()
                     c.save()
                     infoBuffer.seek(0)
@@ -512,9 +482,39 @@ def generatePairings(promotional_id, color):
 
                     infoBuffer = StringIO.StringIO()
                     c = canvas.Canvas(infoBuffer)
-                    cover = PdfFileReader(open("Judges_packet_template.pdf", "rb"))
+                    cover = PdfFileReader(open("Pairings_packet_template.pdf", "rb"))
                     coverPage = cover.getPage(0)
                     coverCounter = 0
+
+                if coverCounter == 0:
+                    c.setFont('Helvetica', 24)
+                    #Page title
+                    c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt Pairings")
+                    #table header
+                    c.setFont('Helvetica-Bold', 18)
+                    c.drawString(80, 624, app.rankInfo + " " + color.title() + " Belt")
+
+                c.setFont('Helvetica', 18)
+                # put "A) " or "B) " depending on whether the application
+                # is on side A or B. Same for the pairing partner.
+                if app.sideA_id:
+                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
+                    sideB = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideA_id).one()
+                    c.drawString(340, 590 - coverCounter*offset, "B) " + sideB.fullName)
+                elif app.sideB_id:
+                    c.drawString(80, 590 - coverCounter*offset, "B) " + app.fullName)
+                    sideA = session.query(Application).filter_by(promotional_id=promotional_id, id=app.sideB_id).one()
+                    c.drawString(340, 590 - coverCounter*offset, "A) " + sideA.fullName)
+                else:
+                    c.drawString(80, 590 - coverCounter*offset, "A) " + app.fullName)
+                    c.drawString(340, 590 - coverCounter*offset, "SUB")
+                
+                #number listing
+                c.drawCentredString(310, 590 - coverCounter*offset, str(app.number))
+                
+                coverCounter += 1
+
+                previousRank = app.rank
 
         c.showPage()
         c.save()
@@ -524,9 +524,7 @@ def generatePairings(promotional_id, color):
         output.addPage(coverPage)
         infoBuffer.close()
 
-    generatePairingsPage(previousRank)
-    previousRank += 1
-    generatePairingsPage(previousRank)
+    generatePairingsPage()
 
     outputStream = StringIO.StringIO()
     output.write(outputStream)
