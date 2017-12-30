@@ -114,7 +114,7 @@ def addPromotional():
         newPromotional = Promotional(
             date=datetime.strptime(request.form['promotionalDate'], '%Y-%m-%d'), type=request.form['type'])
         session.add(newPromotional)
-        # flash('New Promotional %s Successfully Created' % newPromotional.name)
+        flash('Promotional created for %s' % (newPromotional.date.strftime("%B %d, %Y") + " - " + newPromotional.type))
         session.commit()
         return redirect(url_for('home'))
 
