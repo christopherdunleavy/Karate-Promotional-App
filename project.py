@@ -420,10 +420,6 @@ def showPairings(promotional_id, color):
 def editPairings(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     title="test edit pairings"
-    error = None
-
-    if request.args.get('error') != None:
-    	error = errors[request.args.get('error')]
 
     if request.method == 'POST':
     	for application in applications:
@@ -431,7 +427,6 @@ def editPairings(promotional_id, color):
             application.sideB_id = None
 
         for application in applications:
-            print application.firstName
             if not application.sideB_id and request.form[str(application.id)] != "sub":
                 sideB = session.query(Application).filter_by(id=request.form[str(application.id)]).one()
                 application.sideA_id = sideB.id
