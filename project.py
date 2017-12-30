@@ -548,6 +548,7 @@ def addApplication(promotional_id):
             firstName=request.form['firstName'], lastName=request.form['lastName'], age=request.form["age"], rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
+        flash('%s Added' % newApplication.fullName)
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
         number = 1
