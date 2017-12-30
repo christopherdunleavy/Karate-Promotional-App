@@ -22,7 +22,7 @@
             <td>
               <select class="pairingSelect" style="width:100%" name="{{ application.id }}">
                 <option value="sub">SUB</option>
-                {% for app in applications %} {% if app != application and app.rank == application.rank %}
+                {% for app in applications %} {% if app != application %}
                 <option value="{{ app.id }}" {% if app == application.partner() %} selected {% endif %}>{{ app.fullName }} - {{ app.rankInfo }}</option>
                 {% endif %} {% endfor %}
               </select>
