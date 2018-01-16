@@ -20,9 +20,9 @@
           <tr>
             <td>{{ application.fullName }} - {{ application.rankInfo }}</td>
             <td>
-              <select class="pairingSelect" style="width:100%" name="{{ application.id }}">
+              <select name ="partner" class="form-control" style="width:100%" name="{{ application.id }}">
                 <option value="sub">SUB</option>
-                {% for app in applications %} {% if app != application %}
+                {% for app in applications %} {% if app != application %0}
                 <option value="{{ app.id }}" {% if app == application.partner() %} selected {% endif %}>{{ app.fullName }} - {{ app.rankInfo }}</option>
                 {% endif %} {% endfor %}
               </select>

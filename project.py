@@ -585,7 +585,7 @@ def editApplication(promotional_id, application_id):
             number += 1
             
         session.commit()
-        flash('Application Successfully Edited')
+        flash('Edited ' + editedApplication.fullName)
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
@@ -597,18 +597,15 @@ def deleteApplication(promotional_id, application_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
     if request.method == 'POST':
-        if deletedApplication.pairingA or deletedApplication.pairingB:
-            pairing = session.query(Pairing).filter(or_(Pairing.application_A == deletedApplication, Pairing.application_B == deletedApplication)).one()
-            session.delete(pairing)
         session.delete(deletedApplication)
-        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.birthDate.desc()).all()
+        applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
         number = 1
         for application in applications:
             application.number = number
             session.add(application)
             number += 1
         session.commit()
-        flash('Application Successfully Deleted')
+        flash('Deleted ' + deletedApplication.fullName)
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('deleteapplication.html', promotional_id=promotional_id, application_id=application_id, application=deletedApplication)
