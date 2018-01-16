@@ -5,11 +5,20 @@
 {% include "appheader.html" %}
 
 <div class="container py-5">
+  <div class = 'flash'>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-danger alert-dismissable">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+              <strong>Error:</strong> {{message}}
+          </div>
+          {% endfor %}
+      {% endif %}
+      {% endwith %}
+  </div>
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      {% if error %}
-      <div class="alert alert-danger">{{error}}</div>
-      {% endif %}
       <form method="post" action="{{url_for('editPairings', promotional_id=promotional_id, color=color)}}">
         <table class="table table-hover">
           <tr>
@@ -20,9 +29,9 @@
           <tr>
             <td>{{ application.fullName }} - {{ application.rankInfo }}</td>
             <td>
-              <select name ="partner" class="form-control" style="width:100%" name="{{ application.id }}">
+              <select class="form-control" style="width:100%" name="{{ application.id }}">
                 <option value="sub">SUB</option>
-                {% for app in applications %} {% if app != application %0}
+                {% for app in applications %} {% if app != application %}
                 <option value="{{ app.id }}" {% if app == application.partner() %} selected {% endif %}>{{ app.fullName }} - {{ app.rankInfo }}</option>
                 {% endif %} {% endfor %}
               </select>

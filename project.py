@@ -420,15 +420,26 @@ def showPairings(promotional_id, color):
 def editPairings(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     title="test edit pairings"
+    print 'test'
 
     if request.method == 'POST':
-    	for application in applications:
-            application.sideA_id = None
-            application.sideB_id = None
+    	for key in request.form:
+            partner = request.form[key]
+            if partner != 'sub':
+                if request.form[partner] != key:
+                    flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
+                    return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
 
         for application in applications:
+            application.sideA_id = None
+            application.sideB_id = None 
+
+        for application in applications:
+            print "test 431"
             if not application.sideB_id and request.form[str(application.id)] != "sub":
+                print "test 433"
                 sideB = session.query(Application).filter_by(id=request.form[str(application.id)]).one()
+                print 'test 435'
                 application.sideA_id = sideB.id
                 sideB.sideB_id = application.id
                 session.add(sideB)
