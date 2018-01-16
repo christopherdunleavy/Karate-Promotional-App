@@ -134,7 +134,7 @@ def editPromotional(promotional_id):
         
         session.add(promotional)
         session.commit()
-        flash('Promotional Successfully Edited')
+        flash('Edited ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type))
         return redirect(url_for('home'))
     else:
         return render_template('editpromotional.html', promotional=promotional)
@@ -153,7 +153,7 @@ def deletePromotional(promotional_id):
         for application in applications:
             session.delete(application)
         session.commit()
-        flash('Promotional Successfully Deleted')
+        flash('Deleted ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type))
         return redirect(url_for('home'))
     else:
         return render_template('deletepromotional.html', promotional_id=promotional_id)
