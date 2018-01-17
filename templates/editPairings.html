@@ -36,6 +36,12 @@
                 {% endif %} {% endfor %}
               </select>
             </td>
+            <td>
+              {% if application.id in flagged %}
+                <p>X</p>
+              {% endif %}
+
+            </td>
           </tr>
           {% endfor %} {% endif %}
 

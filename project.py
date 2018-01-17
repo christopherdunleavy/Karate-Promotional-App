@@ -420,17 +420,29 @@ def showPairings(promotional_id, color):
 def editPairings(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     title="test edit pairings"
-    print 'test'
 
     if request.method == 'POST':
+        flagged = []
     	for key in request.form:
             partner = request.form[key]
             if partner != 'sub':
                 if request.form[partner] != key:
-                    flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
-                    return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
+                    if int(key) not in flagged:
+                        print "flagged" + key
+                        flagged.append(int(key))
+                    if int(request.form[key]) not in flagged:
+                        print "flagged" + request.form[key]
+                        flagged.append(int(request.form[key]))
+         
+        if flagged: 
+            for application in applications:
+                print (application.id in flagged)
+            print flagged           
+            flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
+            return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications, flagged=flagged)
 
         for application in applications:
+            print (application in flagged)
             application.sideA_id = None
             application.sideB_id = None 
 
