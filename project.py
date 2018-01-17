@@ -440,6 +440,7 @@ def editPairings(promotional_id, color):
                         flagged.append(request.form[key])
          
         if flagged: 
+            #pass the form back so that the dropdowns can be set in html
             form = request.form         
             flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
             return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications, form=form, flagged=flagged, str=str)
