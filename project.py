@@ -8,6 +8,7 @@ from sqlalchemy import create_engine, asc, and_, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing, User
 from flask import session as login_session
+from flask.ext.bcrypt import Bcrypt
 import random
 import string
 import httplib2
@@ -34,6 +35,8 @@ errors = {"1":"Error: Duplicate"}
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+bcrypt = Bcrypt(app)
+
 @login_manager.user_loader
 def load_user(user_id):
     return session.query(User).filter_by(id=user_id).first()
@@ -53,9 +56,9 @@ def login():
         if request.form['email'] and request.form['password']:
             email = request.form['email']
             password = request.form['password']
-            user = session.query(User).filter_by(email=email, password=password).first()
+            user = session.query(User).filter_by(email=email).first()
 
-            if user:
+            if bcrypt.check_password_hash(user.password, password):
                 login_user(user)
                 return redirect(url_for('home'))
             else:
@@ -93,6 +96,8 @@ def register():
             return render_template('register.html', error=error)
 
         else:
+            #hash password
+            password = bcrypt.generate_password_hash(password)
             user = User(firstName=firstName, lastName=lastName, password=password, email=email)
             session.add(user)
             session.commit()
