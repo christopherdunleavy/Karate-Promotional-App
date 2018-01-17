@@ -416,7 +416,7 @@ def generateJudgesPackets(promotional_id, color):
 def showPairings(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
     
-    title="test pairings"
+    title="Pairings for " + color
 
     return render_template('pairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
 
@@ -424,7 +424,7 @@ def showPairings(promotional_id, color):
 @login_required
 def editPairings(promotional_id, color):
     applications = session.query(Application).filter_by(promotional_id=promotional_id, color=color).order_by(Application.number).all()
-    title="test edit pairings"
+    title="Edit Pairings for " + color
 
     if request.method == 'POST':
         flagged = []
@@ -464,7 +464,8 @@ def editPairings(promotional_id, color):
         return redirect(url_for('showPairings', promotional_id=promotional_id, color=color, applications=applications))
 
     else:
-    	return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications)
+        form = None
+    	return render_template('editPairings.html', title=title, form=form, promotional_id=promotional_id, color=color, applications=applications)
 
 @app.route('/<int:promotional_id>/<string:color>/generatePairings')
 @login_required
