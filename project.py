@@ -432,19 +432,17 @@ def editPairings(promotional_id, color):
             partner = request.form[key]
             if partner != 'sub':
                 if request.form[partner] != key:
-                    if int(key) not in flagged:
+                    if key not in flagged:
                         print "flagged" + key
-                        flagged.append(int(key))
-                    if int(request.form[key]) not in flagged:
+                        flagged.append(key)
+                    if request.form[key] not in flagged:
                         print "flagged" + request.form[key]
-                        flagged.append(int(request.form[key]))
+                        flagged.append(request.form[key])
          
         if flagged: 
-            for application in applications:
-                print (application.id in flagged)
-            print flagged           
+            form = request.form         
             flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
-            return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications, flagged=flagged)
+            return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications, form=form, flagged=flagged, str=str)
 
         for application in applications:
             print (application in flagged)

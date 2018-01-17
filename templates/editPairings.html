@@ -32,12 +32,15 @@
               <select class="form-control" style="width:100%" name="{{ application.id }}">
                 <option value="sub">SUB</option>
                 {% for app in applications %} {% if app != application %}
+                {% if form != None %}
+                <option value="{{ app.id }}" {% if form[application.id|string]|int == app.id %} selected {% endif %}>{{ app.fullName }} - {{ app.rankInfo }}</option>
+                {% else %}
                 <option value="{{ app.id }}" {% if app == application.partner() %} selected {% endif %}>{{ app.fullName }} - {{ app.rankInfo }}</option>
-                {% endif %} {% endfor %}
+                {% endif %} {% endif %} {% endfor %}
               </select>
             </td>
             <td>
-              {% if application.id in flagged %}
+              {% if application.id|string in flagged %}
                 <p>X</p>
               {% endif %}
 
