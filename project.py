@@ -24,7 +24,9 @@ app = Flask(__name__)
 APPLICATION_NAME = "Karate Promotional Organizer"
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///promotional.db')
+#engine = create_engine('sqlite:///promotional.db')
+engine = create_engine('postgres://karate:karate@localhost/promotional.db')
+
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

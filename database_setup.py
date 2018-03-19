@@ -100,6 +100,6 @@ class Pairing(Base):
     application_B = relationship("Application", foreign_keys=[sideB_id], backref="pairingB")
     promotional = relationship("Promotional")
 
-engine = create_engine('sqlite:///promotional.db')
+engine = create_engine('postgres://karate:karate@localhost/promotional.db')
 
 Base.metadata.create_all(engine)
