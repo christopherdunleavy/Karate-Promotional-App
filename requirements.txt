@@ -5,3 +5,6 @@ requests==2.11.1
 httplib2==0.10.3
 reportlab==3.4.0
 PyPDF2==1.26.0
+
+flask-bcrypt
+psycopg2
