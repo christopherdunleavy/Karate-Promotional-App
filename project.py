@@ -569,8 +569,11 @@ def generatePairings(promotional_id, color):
 def addApplication(promotional_id):
     if request.method == 'POST':
         color = rank_to_belt(int(request.form['rank']))
+        age = 0
+        if request.form['age']:
+            age = request.form['age']
         newApplication = Application(
-            firstName=request.form['firstName'], lastName=request.form['lastName'], age=request.form["age"], rank=int(request.form['rank']),
+            firstName=request.form['firstName'], lastName=request.form['lastName'], age=age, rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
         flash('%s Added' % newApplication.fullName)
