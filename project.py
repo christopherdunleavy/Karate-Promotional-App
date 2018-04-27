@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, asc, and_, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing, User
 from flask import session as login_session
-from flask.ext.bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 import random
 import string
 import httplib2
