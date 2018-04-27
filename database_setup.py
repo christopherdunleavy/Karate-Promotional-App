@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
 from datetime import date
+import os
 
 Base = declarative_base()
 
@@ -100,6 +101,6 @@ class Pairing(Base):
     application_B = relationship("Application", foreign_keys=[sideB_id], backref="pairingB")
     promotional = relationship("Promotional")
 
-engine = create_engine('postgres://karate:karate@localhost/promotional.db')
+engine = create_engine(os.environ['DATABASE_URL'])
 
 Base.metadata.create_all(engine)

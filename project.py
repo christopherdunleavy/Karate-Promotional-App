@@ -16,6 +16,7 @@ import json
 from flask import make_response
 import requests
 import StringIO
+import os
 
 app = Flask(__name__)
 
@@ -25,7 +26,7 @@ APPLICATION_NAME = "Karate Promotional Organizer"
 
 # Connect to Database and create database session
 #engine = create_engine('sqlite:///promotional.db')
-engine = create_engine('postgres://karate:karate@localhost/promotional.db')
+engine = create_engine(os.environ['DATABASE_URL'])
 
 Base.metadata.bind = engine
 
