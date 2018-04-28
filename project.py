@@ -110,6 +110,7 @@ def register():
     else:    
         return render_template('register.html')
 
+@app.route('/')
 @app.route('/home')
 @login_required
 def home():
