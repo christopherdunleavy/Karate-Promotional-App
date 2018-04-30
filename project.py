@@ -305,6 +305,7 @@ def generateJudgesPackets(promotional_id, color):
                 if coverCounter == 0:
                     c.setFont('Helvetica', 24)
                     #Page title
+                    c.drawCentredString(300, 775, date)
                     c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt")
                     #table header
                     c.setFont('Helvetica-Bold', 18)
