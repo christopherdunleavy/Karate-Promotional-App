@@ -489,6 +489,8 @@ def generatePairings(promotional_id, color):
 
     #a method used to loop through applications of a given rank and create 
     #a pdf page
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+
     date = promotional.date.strftime("%B %d, %Y")
 
     def generatePairingsPage():
