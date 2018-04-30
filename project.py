@@ -521,7 +521,7 @@ def generatePairings(promotional_id, color):
 
                 if coverCounter == 0:
                     c.setFont('Helvetica', 24)
-                    c.drawCentredString(300, 725, date)
+                    c.drawCentredString(300, 735, date)
                     #Page title
                     c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt Pairings")
                     #table header
