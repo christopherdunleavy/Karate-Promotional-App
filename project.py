@@ -489,6 +489,8 @@ def generatePairings(promotional_id, color):
 
     #a method used to loop through applications of a given rank and create 
     #a pdf page
+    date = promotional.date.strftime("%B %d, %Y")
+
     def generatePairingsPage():
         infoBuffer = StringIO.StringIO()
         c = canvas.Canvas(infoBuffer)
@@ -517,6 +519,7 @@ def generatePairings(promotional_id, color):
 
                 if coverCounter == 0:
                     c.setFont('Helvetica', 24)
+                    c.drawCentredString(300, 725, date)
                     #Page title
                     c.drawCentredString(300, 675, app.rankInfo + " " + color.title() + " Belt Pairings")
                     #table header
