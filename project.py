@@ -243,7 +243,7 @@ def generateCertificates(promotional_id, color):
 
         def drawCertificate(c):
             c.setFont('Helvetica', 24)
-            c.drawCentredString(305,452, name)
+            c.drawCentredString(305,452, name.upper())
             c.setFont('Helvetica', 28)
             c.drawCentredString(305,372, (application.rankInfo + " " + application.color.capitalize() + " Belt"))
             c.setFont('Helvetica', 14)
