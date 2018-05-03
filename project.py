@@ -233,6 +233,7 @@ def generateCertificates(promotional_id, color):
     for application in applications:
         name = application.firstName + " " + application.lastName
         sensei = "Sue Miller, Sensei"
+        sensei2 = None
         if application.age > 10:
             sensei = "Sue Miller, Sensei"
             sensei2 = "Nobu Kaji, Sensei"
