@@ -233,8 +233,8 @@ def generateCertificates(promotional_id, color):
     for application in applications:
         name = application.firstName + " " + application.lastName
         sensei = "Sue Miller, Sensei"
-        if application.age > 12:
-            sensei = "Nobu Kaji, Sensei"
+        if application.age > 10:
+            sensei = "Sue Miller, Sensei\nNobu Kaji, Sensei"
 
         certificate = PdfFileReader(open("promotionalCertificate.pdf", "rb"))
         certificatePage = certificate.getPage(0)
