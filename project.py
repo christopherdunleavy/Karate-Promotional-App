@@ -251,7 +251,7 @@ def generateCertificates(promotional_id, color):
             c.drawString(180,330, date)
             if sensei2:
                 c.drawCentredString(194,286, sensei2)
-                c.drawCentredString(194,312, sensei)
+                c.drawCentredString(194,302, sensei)
             else:
                 c.drawCentredString(194,286, sensei)
             c.drawString(383,255, "10th Dan")
