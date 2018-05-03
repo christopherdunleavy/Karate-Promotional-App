@@ -235,8 +235,8 @@ def generateCertificates(promotional_id, color):
         sensei = "Sue Miller, Sensei"
         sensei2 = None
         if application.age > 10:
-            sensei = "Sue Miller, Sensei"
-            sensei2 = "Nobu Kaji, Sensei"
+            sensei = "Nobu Kaji, Sensei"
+            sensei2 = "Sue Miller, Sensei"
 
         certificate = PdfFileReader(open("promotionalCertificate.pdf", "rb"))
         certificatePage = certificate.getPage(0)
@@ -247,12 +247,12 @@ def generateCertificates(promotional_id, color):
             c.setFont('Helvetica', 24)
             c.drawCentredString(305,452, name.upper())
             c.setFont('Helvetica', 28)
-            c.drawCentredString(305,372, (application.rankInfo + " " + application.color.capitalize() + " Belt"))
+            c.drawCentredString(305,372, (application.rankInfo.upper() + " " + application.color.upper() + " BELT"))
             c.setFont('Helvetica', 14)
             c.drawString(180,330, date)
             if sensei2:
-                c.drawCentredString(194,286, sensei2)
                 c.drawCentredString(194,305, sensei)
+                c.drawCentredString(194,286, sensei2)
             else:
                 c.drawCentredString(194,286, sensei)
             c.drawString(383,255, "10th Dan")
