@@ -60,6 +60,7 @@
 						<td>{{application.payment}}</td>
 						<td><a href="#" onclick="openEditApplicationModal({{application.id}},{{promotional_id}})">Edit</a></td>
 						<td><a href="#" onclick="openDeleteApplicationModal({{application.id}},{{promotional_id}})">Delete</a></td>
+						<td><a href="{{url_for('generateCertificate',promotional_id=promotional_id,application_id=application.id,color=application.color)}}">Certificate</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>

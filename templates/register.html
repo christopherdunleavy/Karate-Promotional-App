@@ -11,9 +11,6 @@
 	        	<div class="alert alert-danger">{{error}}</div>
 	        	{% endif %}
 				<h4>Register</h4>
-				<div class="form-group">
-					<label>Dojo Password</label>&nbsp;<input type="password" class="form-control" name="dojoPassword"><br>
-				</div>
 	    		<div class="form-group">
 	    			<label>First Name </label>&nbsp;<input type="text" class="form-control" name="firstName" required><br>
 	    		</div>
@@ -28,7 +25,10 @@
 	    		</div>	
 	    		<div class="form-group">
 	    			<label>Confirm password </label>&nbsp;<input type="password" class="form-control" name="confirmPassword" required><br>
-	    		</div>	
+				</div>	
+				<div class="form-group">
+					<label>Dojo Password</label>&nbsp;<input type="password" class="form-control" name="dojoPassword" required><br>
+				</div>
 	    		<button type="submit" class="btn btn-default">Submit</button>
 	        </form>
 	        <div class="col-md-3"></div>
