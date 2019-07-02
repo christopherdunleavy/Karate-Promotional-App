@@ -84,33 +84,40 @@ def logout():
     else:
         return render_template('logout.html')
 
-#@app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         if not (request.form['firstName'] and request.form['lastName'] and request.form['lastName'] and request.form['password'] and request.form['confirmPassword']):
-#             error = "please fill in all fields"
-#             return render_template('register.html', error=error)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        if not (request.form['dojoPassword'] and request.form['firstName'] and request.form['lastName'] and request.form['lastName'] and request.form['password'] and request.form['confirmPassword']):
+            error = "please fill in all fields"
+            return render_template('register.html', error=error)
 
-#         firstName = request.form['firstName']
-#         lastName = request.form['lastName']
-#         email = request.form['email']
-#         password = request.form['password']
-#         confirmPassword = request.form['confirmPassword']
+        # This password is needed to make an account
+        dojoKey = '167842945241'
+        dojoPassword = request.form['dojoPassword']
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        confirmPassword = request.form['confirmPassword']
 
-#         if password != confirmPassword:
-#             error = "passwords don't match"
-#             return render_template('register.html', error=error)
+        if dojoPassword != dojoKey:
+            error = "Invalid Dojo password. Please contact administrator"
+            return render_template('register.html', error=error)
 
-#         else:
-#             #hash password
-#             password = bcrypt.generate_password_hash(password)
-#             user = User(firstName=firstName, lastName=lastName, password=password, email=email)
-#             session.add(user)
-#             session.commit()
-#             login_user(user)
-#             return redirect(url_for('home'))
-#     else:    
-#         return render_template('register.html')
+        if password != confirmPassword:
+            error = "passwords don't match"
+            return render_template('register.html', error=error)
+
+        else:
+            #hash password
+            password = bcrypt.generate_password_hash(password)
+            user = User(firstName=firstName, lastName=lastName, password=password, email=email)
+            session.add(user)
+            session.commit()
+            login_user(user)
+            return redirect(url_for('home'))
+    else:    
+        return render_template('register.html')
 
 @app.route('/')
 @app.route('/home')
