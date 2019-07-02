@@ -84,33 +84,41 @@ def logout():
     else:
         return render_template('logout.html')
 
-#@app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         if not (request.form['firstName'] and request.form['lastName'] and request.form['lastName'] and request.form['password'] and request.form['confirmPassword']):
-#             error = "please fill in all fields"
-#             return render_template('register.html', error=error)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        if not (request.form['dojoPassword'] and request.form['firstName'] and request.form['lastName'] and request.form['lastName'] and request.form['password'] and request.form['confirmPassword']):
+            error = "please fill in all fields"
+            return render_template('register.html', error=error)
 
-#         firstName = request.form['firstName']
-#         lastName = request.form['lastName']
-#         email = request.form['email']
-#         password = request.form['password']
-#         confirmPassword = request.form['confirmPassword']
+        # This password is needed to make an account
+        dojoKey = '167842945241'
+        dojoPassword = request.form['dojoPassword']
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        confirmPassword = request.form['confirmPassword']
 
-#         if password != confirmPassword:
-#             error = "passwords don't match"
-#             return render_template('register.html', error=error)
+        # check if 
+        if dojoPassword != dojoKey:
+            error = "Invalid Dojo password. Please contact administrator."
+            return render_template('register.html', error=error)
 
-#         else:
-#             #hash password
-#             password = bcrypt.generate_password_hash(password)
-#             user = User(firstName=firstName, lastName=lastName, password=password, email=email)
-#             session.add(user)
-#             session.commit()
-#             login_user(user)
-#             return redirect(url_for('home'))
-#     else:    
-#         return render_template('register.html')
+        if password != confirmPassword:
+            error = "passwords don't match"
+            return render_template('register.html', error=error)
+
+        else:
+            #hash password
+            password = bcrypt.generate_password_hash(password)
+            user = User(firstName=firstName, lastName=lastName, password=password, email=email)
+            session.add(user)
+            session.commit()
+            login_user(user)
+            return redirect(url_for('home'))
+    else:    
+        return render_template('register.html')
 
 @app.route('/')
 @app.route('/home')
@@ -285,6 +293,69 @@ def generateCertificates(promotional_id, color):
     return response
 
     #return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color)
+
+@app.route('/<int:promotional_id>/<int:application_id>/<string:color>/certificate', methods=['GET', 'POST'])
+@login_required
+def generateCertificate(promotional_id, application_id, color):
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    application = session.query(Application).filter_by(id=application_id).one()
+    title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type + ": " + color
+
+    output = PdfFileWriter()
+
+    date = promotional.date.strftime("%-m/%-d/%Y")
+
+
+    name = application.firstName + " " + application.lastName
+    sensei = "Sue Miller, Sensei"
+    sensei2 = None
+    if application.age > 10:
+        sensei = "Nobu Kaji, Sensei"
+        sensei2 = "Sue Miller, Sensei"
+
+    certificate = PdfFileReader(open("promotionalCertificate.pdf", "rb"))
+    certificatePage = certificate.getPage(0)
+
+    infoBuffer = StringIO.StringIO()
+
+    def drawCertificate(c):
+        c.setFont('Helvetica', 24)
+        c.drawCentredString(305,452, name.upper())
+        c.setFont('Helvetica', 28)
+        c.drawCentredString(305,372, (application.rankInfo.upper() + " " + application.color.upper() + " BELT"))
+        c.setFont('Helvetica', 14)
+        c.drawString(180,330, date)
+        if sensei2:
+            c.drawCentredString(194,305, sensei)
+            c.drawCentredString(194,286, sensei2)
+        else:
+            c.drawCentredString(194,286, sensei)
+        c.drawString(383,255, "10th Dan")
+
+    c = canvas.Canvas(infoBuffer)
+
+    drawCertificate(c)
+    c.showPage()
+    c.save()
+
+    infoBuffer.seek(0)
+    info = PdfFileReader(infoBuffer)
+    certificatePage.mergePage(info.getPage(0))
+    output.addPage(certificatePage)
+    infoBuffer.close()
+
+    outputStream = StringIO.StringIO()
+    output.write(outputStream)
+
+    pdfOut = outputStream.getvalue()
+    outputStream.close()
+
+    fileName = application.fullName + " " + color + " certificate.pdf"
+
+    response = make_response(pdfOut)
+    response.headers['Content-Disposition'] = "attachment; filename=" + fileName
+    response.mimetype = 'application/pdf'
+    return response    
 
 @app.route('/<int:promotional_id>/<string:color>/judgesPackets', methods=['GET', 'POST'])
 @login_required
