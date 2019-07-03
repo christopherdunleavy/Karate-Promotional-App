@@ -30,9 +30,16 @@
 		<div class="col-md-10">
 			{% if color %}
 			<div class="btn-group">
+				{% if applications is defined and applications|length > 0 %}
 				<a class="btn btn-outline-primary" href="{{url_for('generateCertificates',promotional_id=promotional_id, color=color)}}">Generate certificates for {{color.capitalize()}}</a>
 				<a class="btn btn-outline-primary" href="{{url_for('generateJudgesPackets',promotional_id=promotional_id, color=color)}}">Generate judge's packets for {{color.capitalize()}}</a>
 				<a class="btn btn-outline-primary" href="{{url_for('showPairings',promotional_id=promotional_id, color=color)}}">Pairings for {{color.capitalize()}}</a>
+				{% else %}
+				<a class="btn btn-outline-primary disabled" href="#">Generate certificates for {{color.capitalize()}}</a>
+				<a class="btn btn-outline-primary disabled" href="#">Generate judge's packets for {{color.capitalize()}}</a>
+				<a class="btn btn-outline-primary disabled" href="#">Pairings for {{color.capitalize()}}</a>
+				{% endif %}
+				
 			</div>
 			{% else %}
 			<a class="btn btn-outline-primary" href="{{url_for('orderBelts',promotional_id=promotional_id)}}">Order Belts</a>
