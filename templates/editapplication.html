@@ -5,13 +5,13 @@
 	</div>
 	<div class="modal-body">
 		<div class="form-group">
-			<label>First Name </label>&nbsp;<input type="text" class="form-control" name="firstName" value="{{application.firstName}}"><br>
+			<label>First Name </label>&nbsp;<input type="text" class="form-control" name="firstName" value="{{application.firstName}}" maxlength="30"><br>
 		</div>
 		<div class="form-group">
-			<label>Last Name </label>&nbsp;<input type="text" class="form-control" name="lastName" value="{{application.lastName}}"><br>
+			<label>Last Name </label>&nbsp;<input type="text" class="form-control" name="lastName" value="{{application.lastName}}" maxlength="40"><br>
 		</div>
 		<div class="form-group">
-			<label>Age </label>&nbsp;<input type="number" class="form-control" name="age" value="{{application.age}}"><br>
+			<label>Age </label>&nbsp;<input type="number" class="form-control" name="age" value="{{application.age}}" min="1" max="100"><br>
 		</div>
 		<div class="form-group">
 			<label>Rank </label>&nbsp;
@@ -57,7 +57,7 @@
 			</select>
 		</div>
 		<div class="form-group">
-			<label>Payment </label>&nbsp;<input type="text" class="form-control" name="payment" value="{{application.payment}}"><br>
+			<label>Payment </label>&nbsp;<input type="text" class="form-control" name="payment" value="{{application.payment}}" maxlength="40"><br>
 		</div>
 	</div>
 	<div class="modal-footer">
