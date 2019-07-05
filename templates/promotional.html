@@ -42,7 +42,11 @@
 				
 			</div>
 			{% else %}
-			<a class="btn btn-outline-primary" href="{{url_for('orderBelts',promotional_id=promotional_id)}}">Order Belts</a>
+			{% if applications is defined and applications|length > 0 %}
+				<a class="btn btn-outline-primary" href="{{url_for('orderBelts',promotional_id=promotional_id)}}">Order Belts</a>
+			{% else %}
+				<a class="btn btn-outline-primary disabled" href="#">Order Belts</a>
+			{% endif %}
 			{% endif %}
 			<a href="#" class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-user-plus" aria-hidden="true"></i> Add Application</a>
 			<table class="table table-hover">
