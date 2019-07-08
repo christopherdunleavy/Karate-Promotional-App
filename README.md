@@ -9,6 +9,8 @@ This project was written in Python with the Flask framework library and SQLAlche
 
 2. In the directory run `pip install -r requirements.txt`. This will install all the packages needed for this project.
 
-3. Run `python project.py`, and then you should be able to access the application on `localhost:5000/login`
+3. Set your environment variable DATABASE_URL to a valid database URL like so: `export DATABASE_URL=sqlite:///promotional.db`
+
+4. Run `python project.py`, and then you should be able to access the application on `localhost:5000/login`
 
 
