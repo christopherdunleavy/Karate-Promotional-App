@@ -18,6 +18,10 @@ class User(Base, UserMixin):
     email = Column(String(80), nullable=False)
     password = Column(String(80), nullable=False)
 
+    @hybrid_property
+    def fullName(self):
+        return self.firstName + " " + self.lastName
+
 class Promotional(Base):
     __tablename__ = 'promotional'
 
