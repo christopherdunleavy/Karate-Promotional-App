@@ -1,6 +1,20 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary justify-content-between">
-	<a class="btn btn-light" href="{{url_for('home')}}"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
-	<h2 class="navbar-brand">{{title}}</h2>
-	<a class="btn btn-light" href="{{url_for('logout')}}"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
+	<a class="btn btn-light" href="{{url_for('home')}}"><i class="fa fa-home" aria-hidden="true"></i>Home</a>
+	<h2 class="navbar-brand">Shinkyu Shotokan Promotional Builder</h2>
+	
+	{% if not current_user.id %}<div></div>{% endif %}
+	<div class="dropdown {% if not current_user.id %}d-none{% endif %}">
+		<button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<i class="fa fa-user-circle" aria-hidden="true"></i>
+			{{current_user.fullName}}
+			<b class="caret"></b>
+		</button>
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<a class="dropdown-item" href="#" >Settings</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="{{url_for('logout')}}">Log Out</a>
+		</div>
+	</div>
+	
 </nav>
 
