@@ -126,7 +126,7 @@ def register():
 def home():
     promotionals = session.query(Promotional).order_by(desc(Promotional.date))
     return render_template('home.html', title="Shinkyu Shotokan Promotional Builder - user:" + current_user.email, promotionals=promotionals)
- 
+
 @app.route('/addPromotional', methods=['GET', 'POST'])
 @login_required
 def addPromotional():
