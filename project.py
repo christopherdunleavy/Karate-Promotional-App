@@ -6,7 +6,7 @@ from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from sqlalchemy import create_engine, asc, and_, or_
+from sqlalchemy import create_engine, asc, desc, and_, or_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Promotional, Application, Pairing, User
 from flask import session as login_session
