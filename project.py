@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -125,7 +125,7 @@ def register():
 @login_required
 def home():
     promotionals = session.query(Promotional).order_by(desc(Promotional.date))
-    return render_template('home.html', title="Shinkyu Shotokan Promotional Builder - user:" + current_user.email, promotionals=promotionals)
+    return render_template('home.html', title="Shinkyu Shotokan Promotional Builder - user:" + current_user.email, promotionals=promotionals, timedelta=timedelta, date=date)
 
 @app.route('/addPromotional', methods=['GET', 'POST'])
 @login_required
@@ -143,7 +143,7 @@ def addPromotional():
 def editPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         print "hey"
         if request.form['date']:
             promotional.date = datetime.strptime(request.form['date'], '%Y-%m-%d')
