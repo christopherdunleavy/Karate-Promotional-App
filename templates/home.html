@@ -82,8 +82,10 @@
                 {% for promotional in promotionals %}
                 <tr>
                     <td><a href="{{url_for('showPromotional', promotional_id=promotional.id)}}">{{promotional.date}} - {{promotional.type}}</a></td>
+                    {% if promotional.isPromotionalNotExpired() %}
                     <td><a href="#" onclick="openEditPromotionalModal({{promotional.id}})">Edit</a></td>
                     <td><a href="#" onclick="openDeletePromotionalModal({{promotional.id}})">Delete</a></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
