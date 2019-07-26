@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import os
 
 Base = declarative_base()
@@ -41,6 +41,9 @@ class Promotional(Base):
 
     def isPromotionalNotExpired(self):
         return date.today() < self.date + timedelta(days=7)
+
+    def isPromotionalPostdated(self):
+        return datetime.today() > self.date
 
 class Application(Base):
     __tablename__ = 'application'

@@ -3,19 +3,7 @@
 {% include "appheader.html" %}
 <!-- Trigger the modal with a button -->
 <div class="container py-3">
-    <div class = 'flash'>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-success alert-dismissable">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <strong>Success!</strong> {{message}}
-            </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-    </div>
-	<div class="row">
+ 	<div class="row">
 		<div class="col-md-8 offset-md-2">
             <a href="#" class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal">
             <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Add Promotional</a>
@@ -47,7 +35,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label>Date</label>&nbsp;<input type="date" class="form-control" name="promotionalDate"><br>
+                                <label>Date</label>&nbsp;<input type="date" min="{{ date.today() }}" class="form-control" name="promotionalDate"><br>
                             </div>
                             <div class="form-group">
                                 <label>Type</label>
@@ -70,6 +58,7 @@
                 </div>
             </div>
         </div>
+
         <table class="table table-hover">
             <thead>
                 <tr>
