@@ -133,10 +133,16 @@ def addPromotional():
     if request.method == 'POST':
         newPromotional = Promotional(
             date=datetime.strptime(request.form['promotionalDate'], '%Y-%m-%d'), type=request.form['type'])
-        session.add(newPromotional)
-        flash('Promotional created for %s' % (newPromotional.date.strftime("%B %d, %Y") + " - " + newPromotional.type))
-        session.commit()
-        return redirect(url_for('home'))
+        if newPromotional.isPromotionalPostdated() == False:
+            session.add(newPromotional)
+            flash('Promotional created for %s' % (newPromotional.date.strftime("%B %d, %Y") + " - " + newPromotional.type), category="success")
+            session.commit()
+            return redirect(url_for('home'))
+        else:
+            error = "Please select a date later than today's date."
+            flash(error, category="error")
+            return redirect(url_for('home'))
+        
 
 @app.route('/<int:promotional_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -154,7 +160,7 @@ def editPromotional(promotional_id):
         
         session.add(promotional)
         session.commit()
-        flash('Edited ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type))
+        flash('Edited ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type), category="success")
         return redirect(url_for('home'))
     else:
         return render_template('editpromotional.html', promotional=promotional)
@@ -173,7 +179,7 @@ def deletePromotional(promotional_id):
         for application in applications:
             session.delete(application)
         session.commit()
-        flash('Deleted ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type))
+        flash('Deleted ' + (promotional.date.strftime("%B %d, %Y") + " - " + promotional.type), category="success")
         return redirect(url_for('home'))
     else:
         return render_template('deletepromotional.html', promotional_id=promotional_id)
@@ -527,7 +533,7 @@ def editPairings(promotional_id, color):
         if flagged: 
             #pass the form back so that the dropdowns can be set in html
             form = request.form         
-            flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.')
+            flash('There are either duplicate entries, or students are not partnered up correctly. Please try again.', category="error")
             return render_template('editPairings.html', title=title, promotional_id=promotional_id, color=color, applications=applications, form=form, flagged=flagged, str=str)
 
         for application in applications:
@@ -664,7 +670,7 @@ def addApplication(promotional_id):
             firstName=request.form['firstName'], lastName=request.form['lastName'], age=age, rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
-        flash('%s Added' % newApplication.fullName)
+        flash('%s Added' % newApplication.fullName, category="success")
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
         number = 1
@@ -706,7 +712,7 @@ def editApplication(promotional_id, application_id):
             number += 1
             
         session.commit()
-        flash('Edited ' + editedApplication.fullName)
+        flash('Edited ' + editedApplication.fullName, category="success")
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
@@ -726,7 +732,7 @@ def deleteApplication(promotional_id, application_id):
             session.add(application)
             number += 1
         session.commit()
-        flash('Deleted ' + deletedApplication.fullName)
+        flash('Deleted ' + deletedApplication.fullName, category="success")
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('deleteapplication.html', promotional_id=promotional_id, application_id=application_id, application=deletedApplication)
