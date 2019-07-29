@@ -43,7 +43,7 @@ class Promotional(Base):
         return date.today() < self.date + timedelta(days=7)
 
     def isPromotionalPostdated(self):
-        return datetime.today() > self.date
+        return date.today() > self.date
 
 class Application(Base):
     __tablename__ = 'application'
