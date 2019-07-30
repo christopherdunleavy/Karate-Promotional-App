@@ -36,7 +36,11 @@
 				<a class="btn btn-outline-primary disabled" href="#">Order Belts</a>
 			{% endif %}
 			{% endif %}
+			{% if promotional.isPromotionalNotExpired() %}
 			<a href="#" class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-user-plus" aria-hidden="true"></i> Add Application</a>
+			{% else %}
+			<a href="#" class="btn btn-primary float-right disabled" data-toggle="modal" data-target="#myModal"><i class="fa fa-user-plus" aria-hidden="true"></i> Add Application</a>
+			{% endif %}
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -57,8 +61,10 @@
 						<td>{{application.rankInfo}}</td>
 						<td>{{application.beltSize}}</td>
 						<td>{{application.payment}}</td>
+						{% if promotional.isPromotionalNotExpired() %}
 						<td><a href="#" onclick="openEditApplicationModal({{application.id}},{{promotional_id}})">Edit</a></td>
 						<td><a href="#" onclick="openDeleteApplicationModal({{application.id}},{{promotional_id}})">Delete</a></td>
+						{% endif %}
 						<td><a href="{{url_for('generateCertificate',promotional_id=promotional_id,application_id=application.id,color=application.color)}}">Certificate</a></td>
 					</tr>
 					{% endfor %}
@@ -67,7 +73,7 @@
 		</div>
 
 		<div id="editModal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
+			<bdiv class="modal-dialog">
 				<div class="modal-content" id="editModalContent">
 				</div>
 			</div>

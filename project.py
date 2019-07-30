@@ -190,7 +190,7 @@ def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, promotional=promotional)
 
 @app.route('/<int:promotional_id>/<string:color>', methods=['GET', 'POST'])
 @login_required
@@ -205,7 +205,7 @@ def showPromotionalColor(promotional_id, color):
     if request.args.get('error') != None:
     	error = errors[request.args.get('error')]
 
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error, promotional=promotional)
 
 @app.route('/<int:promotional_id>/orderBelts', methods=['GET', 'POST'])
 @login_required
@@ -691,7 +691,7 @@ def editApplication(promotional_id, application_id):
     editedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
-    if request.method == 'POST' and promotional.isPromotionalPostdated() == False:
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         if request.form['firstName']:
             editedApplication.firstName = request.form['firstName']
         if request.form['lastName']:
@@ -728,7 +728,7 @@ def deleteApplication(promotional_id, application_id):
     deletedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
-    if request.method == 'POST' and promotional.isPromotionalPostdated() == False:
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         session.delete(deletedApplication)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
         number = 1
