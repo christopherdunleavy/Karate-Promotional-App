@@ -172,7 +172,7 @@ def deletePromotional(promotional_id):
     applications = session.query(Application).filter_by(promotional_id=promotional_id).all()
     pairings = session.query(Pairing).filter_by(promotional_id=promotional_id).all()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         session.delete(promotional)
         for pairing in pairings:
             session.delete(pairing)
@@ -190,7 +190,7 @@ def showPromotional(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
     title = promotional.date.strftime("%B %d, %Y") + " - " + promotional.type
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, promotional=promotional)
 
 @app.route('/<int:promotional_id>/<string:color>', methods=['GET', 'POST'])
 @login_required
@@ -205,7 +205,7 @@ def showPromotionalColor(promotional_id, color):
     if request.args.get('error') != None:
     	error = errors[request.args.get('error')]
 
-    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error)
+    return render_template('promotional.html', title=title, promotional_id=promotional_id, applications=applications, color=color, error=error, promotional=promotional)
 
 @app.route('/<int:promotional_id>/orderBelts', methods=['GET', 'POST'])
 @login_required
@@ -661,7 +661,8 @@ def generatePairings(promotional_id, color):
 @app.route('/<int:promotional_id>/addApplication', methods=['GET', 'POST'])
 @login_required
 def addApplication(promotional_id):
-    if request.method == 'POST':
+    promotional = session.query(Promotional).filter_by(id=promotional_id).one()
+    if request.method == 'POST' and promotional.isPromotionalPostdated() == False:
         color = rank_to_belt(int(request.form['rank']))
         age = 0
         if request.form['age']:
@@ -673,13 +674,15 @@ def addApplication(promotional_id):
         flash('%s Added' % newApplication.fullName, category="success")
         # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
-        number = 1
+        number = 1  
         for application in applications:
             application.number = number
             session.add(application)
             number += 1
 
         session.commit()
+        return redirect(url_for('showPromotional', promotional_id=promotional_id))
+    else:
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
 
 @app.route('/<int:promotional_id>/<int:application_id>/edit', methods=['GET', 'POST'])
@@ -688,7 +691,7 @@ def editApplication(promotional_id, application_id):
     editedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         if request.form['firstName']:
             editedApplication.firstName = request.form['firstName']
         if request.form['lastName']:
@@ -714,6 +717,8 @@ def editApplication(promotional_id, application_id):
         session.commit()
         flash('Edited ' + editedApplication.fullName, category="success")
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
+    elif request.method == 'POST':
+        return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('editapplication.html', promotional_id=promotional_id, application_id=application_id, application=editedApplication)
 
@@ -723,7 +728,7 @@ def deleteApplication(promotional_id, application_id):
     deletedApplication = session.query(Application).filter_by(id=application_id).one()
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and promotional.isPromotionalNotExpired():
         session.delete(deletedApplication)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.number).all()
         number = 1
@@ -734,6 +739,8 @@ def deleteApplication(promotional_id, application_id):
         session.commit()
         flash('Deleted ' + deletedApplication.fullName, category="success")
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
+    elif request.method == 'POST':
+         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
         return render_template('deleteapplication.html', promotional_id=promotional_id, application_id=application_id, application=deletedApplication)
 
