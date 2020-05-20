@@ -2,7 +2,7 @@ Flask_Login==0.4.1
 Flask==0.12.2
 SQLAlchemy==1.1.14
 requests==2.11.1
-httplib2==0.10.3
+httplib2==0.18.0
 reportlab==3.4.0
 PyPDF2==1.26.0
 
