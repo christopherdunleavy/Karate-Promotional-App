@@ -3,9 +3,8 @@
 This project was written in Python with the Flask framework library and SQLAlchemy to organize karate promotionals for Shinkyu Shotokan Karate. Instructors can login, create promotionals, add applications, and generate Judge's Packets, Certificates, and Student Paring PDFs. This will cut preparation time for a promotional down from five days to one afternoon.
 
 ----
-## Getting Started
 ### Local Installation
-1. Clone the repository
+1. Clone the repository.
 
 2. Run `sudo apt-get install libpq-dev python-dev` so that psycopg can install.
 
