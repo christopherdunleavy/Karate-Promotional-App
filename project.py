@@ -132,7 +132,7 @@ def home():
 def addPromotional():
     if request.method == 'POST':
         newPromotional = Promotional(
-            date=datetime.strptime(request.form['promotionalDate'], '%Y-%m-%d'), type=request.form['type'])
+            date=datetime.strptime(request.form['promotionalDate'], '%Y-%m-%d').date(), type=request.form['type'])
         if newPromotional.isPromotionalPostdated() == False:
             session.add(newPromotional)
             flash('Promotional created for %s' % (newPromotional.date.strftime("%B %d, %Y") + " - " + newPromotional.type), category="success")
