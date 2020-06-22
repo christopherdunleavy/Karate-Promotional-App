@@ -756,7 +756,6 @@ def deleteApplication(promotional_id, application_id):
 def http_error_handler(error):
     return redirect(url_for('home'))
 
-
 def rank_to_belt(rank):
     colors = ["yellow","blue","blue","green","green","purple","purple","brown","brown","brown","black",
         "black","black","black","black","black","black","black","black","black"]
