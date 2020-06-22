@@ -663,7 +663,14 @@ def generatePairings(promotional_id, color):
 def addApplication(promotional_id):
     promotional = session.query(Promotional).filter_by(id=promotional_id).one()
     if request.method == 'POST' and promotional.isPromotionalPostdated() == False:
+        
+        #return error if first name or last name is blank
+        if not (request.form['firstName'] and request.form['lastName']):
+            flash('First and last name are required', category="error")
+            return redirect(url_for('showPromotional', promotional_id=promotional_id))
+        
         color = rank_to_belt(int(request.form['rank']))
+        
         age = 0
         if request.form['age']:
             age = request.form['age']
@@ -671,8 +678,6 @@ def addApplication(promotional_id):
             firstName=request.form['firstName'], lastName=request.form['lastName'], age=age, rank=int(request.form['rank']),
                  color=color, beltSize=request.form['beltSize'], promotional_id=promotional_id, payment=request.form['payment'])
         session.add(newApplication)
-        flash('%s Added' % newApplication.fullName, category="success")
-        # flash('New Promotional %s Successfully Created' % newPromotional.name)
         applications = session.query(Application).filter_by(promotional_id=promotional_id).order_by(Application.rank, Application.age).all()
         number = 1  
         for application in applications:
@@ -681,9 +686,10 @@ def addApplication(promotional_id):
             number += 1
 
         session.commit()
-        return redirect(url_for('showPromotional', promotional_id=promotional_id))
-    else:
-        return redirect(url_for('showPromotional', promotional_id=promotional_id))
+        flash('%s Added' % newApplication.fullName, category="success")
+    
+    return redirect(url_for('showPromotional', promotional_id=promotional_id))
+
 
 @app.route('/<int:promotional_id>/<int:application_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -717,6 +723,8 @@ def editApplication(promotional_id, application_id):
         session.commit()
         flash('Edited ' + editedApplication.fullName, category="success")
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
+        
+    #redirect to promotional view if POST request is for expired promotional
     elif request.method == 'POST':
         return redirect(url_for('showPromotional', promotional_id=promotional_id))
     else:
