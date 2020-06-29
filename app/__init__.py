@@ -24,7 +24,5 @@ def createApp():
 
 def registerBlueprints(app):
     from app.application_blueprint import application_blueprint
-    
-    app.register_blueprint(application_blueprint)
 
-#import bcrypt, login_manager, session, app
+    app.register_blueprint(application_blueprint)
